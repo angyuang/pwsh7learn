@@ -1,0 +1,668 @@
+### **第六章：系统管理——Windows 管理自动化**
+
+欢迎进入 PowerShell 的核心战场。在前五章中，我们已经系统地掌握了 PowerShell 的语言特性、编程范式和核心思想。现在，我们将把这把削铁如泥的“瑞士军刀”带入它最熟悉的领域——Windows 系统管理。本章将全面、深入地探讨如何利用 PowerShell 实现对 Windows 操作系统的深度自动化管理。
+
+我们将从文件系统和注册表的精细化操作开始，逐步扩展到对进程、服务、事件日志等动态系统组件的控制，并深入探索 WMI/CIM 这一获取系统信息的宝库。对于企业环境，我们还将专门讲解 Active Directory 的核心管理自动化。本章内容旨在将理论付诸实践，为读者提供一套行之有效的、能够直接应用于工作中的 Windows 自动化解决方案。
+
+* * *
+
+#### **6.1. 深入文件与注册表操作**
+
+文件系统和注册表是 Windows 系统的两大基石。文件系统存储着用户和应用程序的数据，而注册表则保存着系统和软件的配置信息。在第二章，我们已经学习了基础的文件操作。在本节中，我们将深入探索更高级、更精细化的操作技巧，并学习如何像管理文件一样，优雅地管理注册表。
+
+##### **6.1.1. 高级文件搜索：精准定位的艺术**
+
+在庞大的文件系统中，快速而准确地找到所需文件，是一项至关重要的技能。`Get-ChildItem` 提供了丰富的参数组合，让我们能够实现外科手术般精准的文件定位。
+
+*   **`-Filter` vs `-Include`/`-Exclude`：性能与灵活性的权衡**
+    
+    虽然这几组参数都用于筛选，但它们的运作机制和适用场景有很大不同。
+    
+    *   **`-Filter`**：这是**最高效**的筛选方式。筛选操作是在文件系统提供程序（Provider）的层面执行的，这意味着在 PowerShell 拿到对象**之前**，大部分不匹配的文件就已经被过滤掉了，极大地减少了数据传输和处理的开销。
+        
+        *   **语法**：它的语法依赖于底层提供程序，对于文件系统，它使用的是传统的 DOS 通配符 (`*` 和 `?`)，但功能相对有限（例如，不能使用 `,` 来指定多个模式）。
+        *   **最佳实践**：当你的筛选条件可以用单个简单的通配符模式表达时，**永远优先使用 `-Filter`**。
+        
+        ```powershell
+        # 极快：在C:\Windows目录下查找所有.log文件
+        Get-ChildItem -Path "C:\Windows" -Filter "*.log"
+        ```
+        
+    *   **`-Include` 和 `-Exclude`**：这两个参数是在 PowerShell 拿到所有结果**之后**进行筛选的。它们通常必须与 `-Recurse` 参数配合使用才能生效。
+        
+        *   **语法**：它们支持更丰富的 PowerShell 通配符，可以用逗号分隔来指定多个模式。
+        *   **适用场景**：当你需要递归地、根据多个复杂模式进行包含或排除筛选时使用。
+        
+        ```powershell
+        # 递归搜索 C:\Program Files 目录，
+        # 查找所有的 .exe 和 .dll 文件，但排除所有以 "unins" 开头的文件
+        Get-ChildItem -Path "C:\Program Files" -Recurse -Include "*.exe", "*.dll" -Exclude "unins*"
+        ```
+        
+    
+    **总结**：先用 `-Filter` 做第一道粗筛，再用 `-Include`/`-Exclude` 或 `Where-Object` 做第二道精筛，是兼顾性能与灵活性的最佳策略。
+    
+
+##### **6.1.2. 访问控制列表（ACL）：掌控文件与文件夹权限**
+
+\*\*访问控制列表（Access Control List, ACL）\*\*是 Windows NTFS 文件系统中定义“谁能对这个文件/文件夹做什么操作”的核心安全机制。PowerShell 提供了 `Get-Acl` 和 `Set-Acl` 两个 Cmdlet，让我们能够以编程方式读取和修改这些权限。
+
+*   **读取 ACL：`Get-Acl`**
+    
+    `Get-Acl` 用于获取一个文件或文件夹的 ACL 对象。这个对象包含了所有者（Owner）和访问规则（Access）等信息。
+    
+    ```powershell
+    $acl = Get-Acl -Path "C:\temp\mydata.txt"
+     
+    # 查看 ACL 的详细信息，特别是访问规则列表
+    $acl.Access
+    ```
+    
+    输出的 `Access` 属性是一个访问控制项（Access Control Entry, ACE）的集合，每一项都清晰地定义了：
+    
+    *   `FileSystemRights`：权限类型（如 FullControl, Read, Write）。
+    *   `AccessControlType`：是允许（Allow）还是拒绝（Deny）。
+    *   `IdentityReference`：权限赋予的用户或组（如 BUILTIN\\Users, NT AUTHORITY\\SYSTEM）。
+*   **修改 ACL：`Set-Acl`**
+    
+    修改 ACL 通常遵循“**读取-修改-写回**”的三步曲模式。直接创建一个全新的 ACL 对象非常复杂，更常见的做法是获取现有的 ACL，对其进行修改，然后再用 `Set-Acl` 将修改后的版本应用回去。
+    
+    **示例：为一个文件夹添加新用户的完全控制权限**
+    
+    ```powershell
+    $folderPath = "C:\reports"
+    $userName = "CORP\Alice" # 假设用户 Alice 属于 CORP 域
+     
+    # 1. 读取现有 ACL
+    $acl = Get-Acl -Path $folderPath
+     
+    # 2. 创建一个新的访问规则
+    # FileSystemRights, Identity, AccessControlType 是构造函数的必要参数
+    $rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
+        $userName,
+        "FullControl",
+        "ContainerInherit, ObjectInherit", # 让权限能被子文件夹和文件继承
+        "None",
+        "Allow"
+    )
+     
+    # 3. 将新规则添加到 ACL 对象中
+    $acl.AddAccessRule($rule)
+     
+    # 4. 将修改后的 ACL 写回文件夹
+    Set-Acl -Path $folderPath -AclObject $acl
+     
+    Write-Host "成功为用户 $userName 添加了对 $folderPath 的完全控制权限。"
+    ```
+    
+    通过脚本管理 ACL，是实现批量权限设置、安全审计和标准化部署的关键技术。
+    
+
+##### **6.1.3. 注册表驱动器：像操作文件一样管理注册表**
+
+PowerShell 的一个天才设计，就是通过\*\*提供程序（Provider）\*\*模型，将不同的数据存储（如文件系统、注册表、证书存储等）抽象为外观和行为都相似的“驱动器”。这意味着，我们用来操作文件的 `Get-Item`, `Set-Item`, `New-ItemProperty` 等 Cmdlet，几乎可以原封不动地用来操作注册表。
+
+*   **导航注册表**
+    
+    PowerShell 默认创建了两个注册表驱动器：`HKLM:` (HKEY\_LOCAL\_MACHINE) 和 `HKCU:` (HKEY\_CURRENT\_USER)。你可以像切换文件目录一样，使用 `cd` (Set-Location) 在注册表键之间导航。
+    
+    ```powershell
+    # 进入 HKLM 的软件键
+    cd HKLM:\SOFTWARE\Microsoft\Windows
+     
+    # 列出当前键下的所有子键（就像列出子目录）
+    Get-ChildItem # 或者 ls, dir
+    ```
+    
+*   **读取、创建和修改注册表键值**
+    
+    *   **`Get-ItemProperty`**：读取一个注册表键的所有“值”（在注册表语境中称为 Property）。
+    *   **`Get-ItemPropertyValue`**：(PowerShell 5.0+) 直接获取某个特定键值的数据，更方便。
+    *   **`Set-ItemProperty`**：修改一个现有的键值，或者如果不存在则创建它。
+    *   **`New-Item`**：创建一个新的注册表**键**（Key）。
+    
+    **示例：检查并设置一个应用程序的配置**
+    
+    ```powershell
+    $regPath = "HKCU:\Software\MyCompany\MyApp"
+    $propertyName = "AutoUpdateEnabled"
+     
+    # 检查键是否存在，不存在则创建
+    if (-not (Test-Path -Path $regPath)) {
+        New-Item -Path $regPath -Force | Out-Null
+    }
+     
+    # 获取键值，如果不存在，则创建并设置为 1 (DWORD)
+    $currentValue = Get-ItemPropertyValue -Path $regPath -Name $propertyName -ErrorAction SilentlyContinue
+    if ($null -eq $currentValue) {
+        Write-Verbose "键值不存在，正在创建..."
+        Set-ItemProperty -Path $regPath -Name $propertyName -Value 1 -Type DWord
+    }
+     
+    Write-Host "注册表键 '$($regPath)\$($propertyName)' 的值已确保为 1。"
+    ```
+    
+    这种将注册表“文件系统化”的抽象能力，极大地降低了管理注册表的复杂性，让脚本编写变得异常直观和统一。
+    
+
+##### **6.1.4. 远程文件操作：`Copy-Item` 的 `-ToSession` 与 `-FromSession`**
+
+在 PowerShell 远程会话（PSSession）中，我们不仅可以执行命令，还可以方便地传输文件。`Copy-Item` 提供了 `-ToSession` 和 `-FromSession` 这两个强大的参数，专门用于在本地和远程会话之间复制文件。这比配置传统的文件共享要简单和安全得多。
+
+**前提**：你必须已经建立了一个到远程计算机的 PSSession。
+
+**示例：将本地脚本复制到远程服务器并执行**
+
+```powershell
+# 1. 建立到远程服务器 SRV01 的持久化会话
+$session = New-PSSession -ComputerName "SRV01"
+ 
+# 2. 将本地的部署脚本，复制到远程服务器的 C:\temp 目录下
+# -ToSession 表示复制的目标是 $session 所代表的远程会话
+Copy-Item -Path ".\Deploy-WebApp.ps1" -Destination "C:\temp" -ToSession $session
+ 
+# 3. 在远程会话中执行刚刚复制过去的脚本
+Invoke-Command -Session $session -ScriptBlock {
+    Write-Host "正在远程执行部署脚本..."
+    C:\temp\Deploy-WebApp.ps1
+}
+ 
+# 4. 从远程服务器上把执行日志下载回本地
+# -FromSession 表示复制的源头是远程会话
+Copy-Item -Path "C:\temp\deploy.log" -Destination ".\" -FromSession $session
+# 5. 清理会话
+Remove-PSSession -Session $session
+```
+
+`-ToSession` 和 `-FromSession` 为跨机器的自动化工作流提供了无缝的文件传输能力，是实现复杂部署和配置管理任务的关键环节。
+
+* * *
+
+#### **6.2. 进程、服务与事件日志管理**
+
+在上一节中，我们掌握了对系统静态“骨架”——文件和注册表——的精细化操作。现在，我们要将目光转向系统中流淌不息的“血液”和“神经信号”——也就是那些动态运行的进程、提供基础功能的服务，以及记录着系统一举一动的重要“脉搏”——事件日志。对这些动态组件的有效监控和管理，是确保系统健康、稳定运行的关键。
+
+如果说文件和注册表是系统的静态配置，那么进程、服务和事件日志则是系统动态运行状态的直接体现。进程是正在执行的程序，服务是后台运行的“守护神”，而事件日志则是系统活动的忠实记录者。PowerShell 提供了功能强大且高度集成的 Cmdlet，让我们能够对这些动态组件进行实时的查询、精准的控制和深入的分析。
+
+##### **6.2.1. 管理远程进程与服务：`-ComputerName` 的威力**
+
+PowerShell 的许多核心管理 Cmdlet（如 `Get-Process`, `Stop-Process`, `Get-Service`, `Start-Service`, `Restart-Service`）都内置了一个 `-ComputerName` 参数。这个参数允许你将命令的目标，从本地计算机无缝地切换到一台或多台远程计算机。
+
+这种方式使用的是传统的 RPC (Remote Procedure Call) 协议，它简单直接，非常适合在域环境中、防火墙策略允许的情况下进行快速的远程查询和操作。
+
+**前提**：
+
+*   你必须拥有目标计算机的管理员权限。
+*   远程计算机的防火墙必须允许相应的远程管理流量（例如，远程服务管理）。
+
+**示例：检查并重启一组 Web 服务器上的 W3SVC 服务**
+
+```powershell
+# 定义一组 Web 服务器
+$webServers = "WEB01", "WEB02", "WEB03"
+ 
+# 批量获取这些服务器上的万维网发布服务 (IIS) 的状态
+Get-Service -Name "W3SVC" -ComputerName $webServers
+ 
+# 假设我们需要重启所有服务器上的该服务
+Write-Host "正在重启所有 Web 服务器上的 W3SVC 服务..."
+Restart-Service -Name "W3SVC" -ComputerName $webServers -Force
+ 
+# 验证重启后的状态
+Get-Service -Name "W3SVC" -ComputerName $webServers | Format-Table -Property MachineName, Status, Name -AutoSize
+```
+
+**`-ComputerName` vs PowerShell Remoting (PSSession)**
+
+*   **`-ComputerName`**：
+    *   **优点**：简单、快速，无需预先建立会话。
+    *   **缺点**：每个命令都建立一个新的连接，效率较低；返回的对象经过了“序列化-反序列化”，丢失了原始的方法（Methods），主要剩下属性（Properties）；依赖于特定的 RPC 端口。
+*   **PSSession (Invoke-Command)**：
+    *   **优点**：使用单一、持久的连接（基于 WinRM），效率高；返回“活的”、带有方法的完整对象；更安全，更易于通过防火墙。
+    *   **缺点**：需要预先使用 `New-PSSession` 或在 `Invoke-Command` 中指定。
+
+**最佳实践**：对于一次性的、简单的远程查询，`-ComputerName` 非常方便。对于复杂的、需要多次交互或需要调用对象方法的远程管理任务，应优先使用基于 PSSession 的 `Invoke-Command`。
+
+##### **6.2.2. 深入事件日志分析：`Get-WinEvent` 的强大筛选**
+
+Windows 事件日志是故障排查、安全审计和性能监控的信息金矿。但其数据量异常庞大，如何从中快速、精确地找到有用的信息，是一项挑战。`Get-WinEvent` Cmdlet 就是为此而生的强大工具，特别是它支持的哈希表筛选，远比简单的 `Where-Object` 高效。
+
+*   **为什么 `Get-WinEvent` 比 `Get-EventLog` 更好？** `Get-EventLog` 是一个较旧的 Cmdlet，它只能查询经典的日志（如 System, Application, Security）。`Get-WinEvent` 则可以查询所有现代的 Windows 事件日志，包括数以百计的应用程序和服务日志（位于 `Applications and Services Logs` 下），并且性能更优越。
+    
+*   **使用 `-FilterHashtable` 进行高效筛选**
+    
+    `Get-WinEvent` 最强大的参数是 `-FilterHashtable`。它允许你将筛选条件（如日志名称、事件ID、级别、时间范围等）打包成一个哈希表。这种筛选是在事件日志服务层面执行的，远比将所有日志拉回 PowerShell 再用 `Where-Object` 过滤要快成千上万倍。
+    
+    **哈希表常用键：** 
+    
+    *   `LogName`：日志名称（如 'System', 'Application'）。可以是一个数组。
+    *   `ID`：事件 ID。可以是一个数组。
+    *   `Level`：事件级别（1=严重, 2=错误, 3=警告, 4=信息, 5=详细）。
+    *   `StartTime`：事件发生的开始时间。
+    *   `EndTime`：事件发生的结束时间。
+    *   `ProviderName`：事件的来源提供程序。
+    
+    **示例：查找过去24小时内所有来源为 "Kernel-Power" 的严重错误和错误事件**
+    
+    ```powershell
+    $yesterday = (Get-Date).AddDays(-1)
+     
+    $filter = @{
+        LogName = 'System'
+        ProviderName = 'Microsoft-Windows-Kernel-Power'
+        Level = 1, 2 # 1 (Critical) 和 2 (Error)
+        StartTime = $yesterday
+    }
+     
+    # 使用高效的 FilterHashtable
+    $criticalEvents = Get-WinEvent -FilterHashtable $filter
+     
+    # 对结果进行进一步处理和展示
+    $criticalEvents | Format-Table TimeCreated, Id, LevelDisplayName, Message -Wrap -AutoSize
+    ```
+    
+
+##### **6.2.3. 创建与响应事件：实现事件驱动的自动化**
+
+除了被动地查询日志，PowerShell 还可以主动地与 Windows 事件子系统进行交互，实现**事件驱动（Event-Driven）**的自动化。这意味着，我们可以“订阅”某个特定的事件，当该事件发生时，自动触发一个预先定义好的 PowerShell 脚本块（称为**动作 Action**）。
+
+这通过一系列 `*-EventSubscriber` Cmdlet 实现。
+
+**核心流程：** 
+
+1.  **`Register-ObjectEvent`**：这是最常用的订阅命令之一。它可以订阅任何 .NET 对象的任何事件。
+2.  **`Register-EngineEvent`**：订阅 PowerShell 引擎自身的事件，例如 `PowerShell.Exiting`。
+3.  **`Register-WmiEvent`**：(较旧) 订阅 WMI 事件。
+
+**示例：监控一个服务的停止事件，并在其停止时自动尝试重启**
+
+```powershell
+# 定义当事件发生时要执行的动作
+$action = {
+    # $event 包含了触发事件的所有信息
+    $serviceName = $event.SourceEventArgs.NewEvent.TargetInstance.Name
+    Write-Warning "检测到服务 '$serviceName' 已停止！正在尝试自动重启..."
+    try {
+        Start-Service -Name $serviceName -ErrorAction Stop
+        Write-Host "服务 '$serviceName' 已成功重启。"
+    }
+    catch {
+        Write-Error "重启服务 '$serviceName' 失败！"
+    }
+}
+ 
+# 构建一个 WQL (WMI Query Language) 查询，用于描述我们感兴趣的事件
+# 我们想监控 Win32_Service 类的实例修改事件，条件是实例的新状态 (State) 变为 "Stopped"
+$query = "SELECT * FROM __InstanceModificationEvent WITHIN 5 WHERE TargetInstance ISA 'Win32_Service' AND TargetInstance.State = 'Stopped'"
+ 
+# 注册事件订阅
+# -SourceIdentifier 为这个订阅起一个唯一的名字，方便后续管理
+Register-WmiEvent -Query $query -SourceIdentifier "ServiceStopMonitor" -Action $action
+ 
+Write-Host "服务停止监控已启动。现在可以手动停止一个服务来测试（例如 'Spooler'）。"
+ 
+# 要查看所有活动的事件订阅：Get-EventSubscriber
+# 要取消订阅：Unregister-Event -SourceIdentifier "ServiceStopMonitor"
+```
+
+这种事件驱动的模式，让我们的脚本从“定时轮询”的被动模式，转变为“实时响应”的主动模式，是实现高度自动化、智能化的系统监控和自我修复（Self-Healing）的关键技术。
+
+* * *
+
+#### **6.3. 使用 WMI/CIM 探索系统信息：与你的计算机进行深度对话**
+
+在前面的小节中，我们已经学会了如何管理文件、注册表、进程和服务。这些操作大多是针对已知的、特定的系统组件。但如果我们想对系统进行一次全面的“体检”，获取关于硬件、软件、操作系统配置等海量的、深度的信息，应该怎么办呢？这时，我们就需要请出 Windows 系统中一个无所不知的“信息总管”——WMI/CIM。
+
+想象一下，如果你的计算机是一位无所不知的智者，它了解自己身体的每一个细节：从心脏（CPU）的每一次搏动，到血液（内存）的每一次流动；从庞大的记忆（磁盘），到身上穿着的每一件衣裳（已安装的软件）。它不仅知道自己“现在”的状态，还记得“过去”的经历。现在，如果有一种语言，能让你与这位智者进行一场深度对话，随心所欲地询问关于它的一切，那将是何等强大的能力？
+
+这，就是 **WMI (Windows Management Instrumentation)** 与其现代化的继任者 **CIM (Common Information Model)** 所赋予我们的力量。它们并非简单的命令，而是一个庞大、精密、活生生的**系统信息模型**。WMI/CIM 是 Windows 操作系统内置的“信息总管”和“神经中枢”，它将计算机硬件、软件、操作系统和服务的每一个可管理组件，都抽象成了一个个结构化的对象，并将其组织在一个巨大的、可查询的“信息殿堂”之中。
+
+学习本节，你将获得一把开启这座殿堂大门的钥匙。你将不再仅仅是命令的执行者，而是系统信息的探索者、诊断专家和架构师。
+
+##### **6.3.1. 时代的选择：从 WMI 到 CIM 的优雅演进**
+
+在探索这座信息殿堂之前，我们需要了解进入它的两种主要“协议”：传统的 WMI 和现代的 CIM。这不仅是技术名词的更替，更是一次深刻的理念革新。
+
+*   **WMI (`Get-WmiObject`)：一位值得尊敬的前辈**
+    
+    *   **它的时代**：在 PowerShell 的早期岁月，`Get-WmiObject` 是我们与 WMI 对话的唯一语言。它基于一种名为 DCOM 的经典远程技术，深深植根于 Windows 的血脉之中。在那个时代，它为自动化管理立下了汗马功劳。
+    *   **它的局限**：然而，DCOM 就像一条古老而狭窄的私家路，它高效但封闭，难以穿越现代网络复杂的防火墙，并且只通向 Windows 这一个目的地。随着跨平台时代的到来，这位前辈的脚步显得有些沉重。在 PowerShell Core (v6+) 的世界里，它已光荣退役。
+*   **CIM (`Get-CimInstance`)：面向未来的世界语**
+    
+    *   **它的革新**：CIM 是一个由行业标准组织定义的、开放的、旨在统一描述所有管理信息的“世界语”。微软在现代 Windows 中，使用一种基于 Web 服务（WS-Management）的协议来实现它。这正是 PowerShell Remoting 所使用的、现代化的、基于 HTTP/HTTPS 的“信息高速公路”。
+    *   **它的优越性**：
+        1.  **开放与跨平台**：CIM 的设计初衷就是为了打破壁垒。它让我们用同样的语言，不仅能与 Windows 对话，还能与支持 WS-Man 的 Linux 主机、网络交换机、存储设备等进行交流。
+        2.  **高效与友好**：基于 Web 的协议意味着它性能更佳，且更容易通过防火墙策略进行管理，这在复杂的企业网络中至关重要。
+        3.  **面向对象的一致性**：CIM 返回的对象与 PowerShell 的管道和对象模型结合得天衣无缝，提供了比 WMI 更可靠、更一致的体验。
+
+**我们的选择**：拥抱未来。除非你的脚本需要兼容 Windows 7 或 Windows Server 2008 R2 之前的古老环境，否则，**CIM (`Get-CimInstance` 及其家族) 是你唯一且最佳的选择**。本书将完全基于 CIM 进行讲解，因为它代表了 PowerShell 管理哲学的现在与未来。
+
+##### **6.3.2. 成为信息猎手：发现并查询 CIM 类的宝藏**
+
+CIM 的信息殿堂中，所有的知识都分门别类地存放在不同的“展厅”里，这些展厅就是 **CIM 类 (CIM Class)**。每一个类都代表了一类可管理的实体。你的第一项技能，就是成为一名“信息猎手”，学会如何找到你需要的那个“展厅”。
+
+*   **探索的地图：`Get-CimClass`** `Get-CimClass` 是你的“寻宝图”。通过它，你可以搜索所有可用的 CIM 类。
+    
+    ```powershell
+    # 寻找与“网络适配器”相关的展厅
+    Get-CimClass -ClassName "*NetworkAdapter*"
+     
+    # 寻找与“内存”或“记忆”相关的展厅
+    Get-CimClass -ClassName "*Memory*"
+    ```
+    
+    花些时间去探索，你会惊叹于其中信息的丰富程度，从 `Win32_Fan` (风扇) 到 `Win32_Battery` (电池)，无所不包。
+    
+*   **进入展厅，获取展品：`Get-CimInstance`** 一旦找到了类名，`Get-CimInstance` 就是你进入展厅、获取“展品”（即该类的实例）的门票。
+    
+    **实战演练：一次全面的系统“体检”**
+    
+    1.  **“大脑”检查 (CPU):** 
+        
+        ```powershell
+        # 查询 Win32_Processor 类，获取 CPU 的核心信息
+        Get-CimInstance -ClassName Win32_Processor | Select-Object Name, Manufacturer, NumberOfCores, NumberOfLogicalProcessors, MaxClockSpeed
+        
+    2.  **“记忆”检查 (Memory):** 
+        
+        ```powershell
+        # 查询 Win32_PhysicalMemory 获取物理内存条信息
+        Get-CimInstance -ClassName Win32_PhysicalMemory | Select-Object DeviceLocator, Capacity, Speed, Manufacturer
+         
+        # 查询 Win32_OperatingSystem 获取内存使用情况
+        $os = Get-CimInstance -ClassName Win32_OperatingSystem
+        [PSCustomObject]@{
+            TotalVisibleMemorySizeGB = [math]::Round($os.TotalVisibleMemorySize / 1GB, 2)
+            FreePhysicalMemoryGB = [math]::Round($os.FreePhysicalMemory / 1GB, 2)
+            UsedMemoryPercentage = [math]::Round((($os.TotalVisibleMemorySize - $os.FreePhysicalMemory) / $os.TotalVisibleMemorySize) * 100, 2)
+        }
+        
+    3.  **“消化系统”检查 (Disk):** 
+        ```powershell
+        # 使用 -Filter 在服务器端进行高效筛选，只看本地固定磁盘
+        Get-CimInstance -ClassName Win32_LogicalDisk -Filter "DriveType=3" |
+            Select-Object DeviceID, VolumeName, @{N='Size(GB)';E={[math]::Round($_.Size / 1GB, 2)}}, @{N='FreeSpace(GB)';E={[math]::Round($_.FreeSpace / 1GB, 2)}}
+
+##### **6.3.3. 从“观察者”到“行动者”：调用 CIM 方法**
+
+CIM 的伟大之处在于，它不仅让你能“看”，还能让你“做”。许多 CIM 对象都自带了可执行的**方法 (Methods)**，允许你直接对该对象执行操作。`Invoke-CimMethod` 就是你从“观察者”转变为“行动者”的法杖。
+
+*   **如何发现可用的方法？** 一个 CIM 类的定义中包含了它的所有方法。
+    
+    ```powershell
+    (Get-CimClass -ClassName Win32_Process).CimClassMethods
+    ```
+    
+    你会看到 `Terminate`, `SetPriority` 等方法。
+    
+*   **实战：远程重启一台“卡住”的服务器** `Restart-Computer` 很棒，但让我们用 CIM 的方式来理解其底层原理。
+    
+    1.  **获取目标操作系统实例：** 
+        
+        powershell
+        
+        ```powershell
+        $remoteOS = Get-CimInstance -ClassName Win32_OperatingSystem -ComputerName "SRV-STUCK-01"
+        
+        ```
+        
+    2.  **调用其 `Reboot` 方法：** 
+        
+        powershell
+        
+        ```powershell
+        Invoke-CimMethod -InputObject $remoteOS -MethodName "Reboot"
+        
+        ```
+        
+    
+    这个简单的例子揭示了一个深刻的道理：许多 PowerShell 的高级管理命令，其底层都可能是对 WMI/CIM 方法的封装。学会直接调用 CIM 方法，意味着你拥有了更底层的、更强大的系统操控能力。
+    
+
+##### **6.3.4. 运筹帷幄：`New-CimSession` 与大规模远程管理**
+
+当你需要同时与数十、数百台服务器进行深度对话时，一次次的“敲门”（建立连接）会耗费大量时间。**CIM 会话 (`New-CimSession`)** 允许你预先建立一条或多条通往目标主机的、持久的、可复用的“VIP通道”。
+
+**这带来的变革是颠覆性的：** 
+
+*   **极致效率**：认证一次，通信无数次。所有后续命令都通过这条预热好的通道高速传输，没有重复的握手和认证开销。
+*   **并行处理**：当你将一个包含多个会话的变量传递给 `Get-CimInstance` 时，PowerShell 会像一位多线程的指挥家，**自动并行**地向所有服务器发起查询，极大地缩短了大规模数据收集的时间。
+*   **高级控制**：CIM 会话允许你精细地控制连接的每一个细节，包括使用特定的凭据、端口、协议，甚至配置复杂的代理和超时选项。
+
+**实战：对整个服务器集群进行 BIOS 版本合规性检查**
+
+powershell
+
+```powershell
+$servers = Get-Content -Path ".\server_list.txt"
+$requiredBiosVersion = "2.1.8"
+ 
+# 1. 建立到所有服务器的持久化 CIM 会话
+Write-Host "正在建立 CIM 会话..."
+$sessions = New-CimSession -ComputerName $servers -ErrorAction SilentlyContinue
+ 
+# 2. 使用会话，并行获取所有服务器的 BIOS 信息
+Write-Host "正在并行获取 BIOS 信息..."
+$biosInfo = Get-CimInstance -ClassName Win32_BIOS -CimSession $sessions
+ 
+# 3. 找出不合规的服务器
+Write-Host "正在分析合规性..."
+$nonCompliant = $biosInfo | Where-Object { $_.SMBIOSBIOSVersion -ne $requiredBiosVersion }
+ 
+# 4. 输出报告
+if ($nonCompliant) {
+    Write-Warning "发现以下服务器 BIOS 版本不合规:"
+    $nonCompliant | Format-Table PSComputerName, Manufacturer, SMBIOSBIOSVersion
+} else {
+    Write-Host "所有服务器 BIOS 版本均合规。" -ForegroundColor Green
+}
+ 
+# 5. 任务完成，清理所有会话
+Write-Host "正在关闭所有 CIM 会话..."
+Remove-CimSession -CimSession $sessions
+```
+
+通过 CIM 会话，我们完成了一次典型的、企业级的自动化任务：高效、并行、可扩展。这正是 PowerShell 结合 CIM 所能达到的、令人赞叹的专业高度。掌握它，你便掌握了大规模 Windows 环境管理的脉搏。
+
+* * *
+
+#### **6.4. Active Directory 核心管理**
+
+到目前为止，我们已经掌握了对单台计算机进行深度管理和自动化的各种技术。但是，在大多数商业、教育或政府机构中，计算机并非孤立存在，而是作为一个庞大网络的一部分，由一个名为 **Active Directory (活动目录，简称 AD)** 的核心服务进行集中管理。AD 是 Windows 域环境的“大脑”和“户籍系统”，负责管理所有的用户、计算机、组以及相关的安全策略。
+
+对于系统管理员而言，对 AD 的自动化管理能力，是衡量其工作效率和价值的关键标准。本节，我们将专门探讨如何利用 PowerShell，从一个命令行窗口，去掌控整个 Active Directory 王国。
+
+Active Directory 是微软推出的一款功能强大的目录服务，是现代企业 IT 基础架构的核心。它存储了网络中所有对象（用户、计算机、组、打印机等）的信息，并负责身份验证和授权。手动通过图形界面（如 "Active Directory Users and Computers") 管理成百上千的用户和组，是一项极其耗时且容易出错的工作。PowerShell 的 Active Directory 模块，则将这项工作变成了几行代码就能完成的高效任务。
+
+**前提**：
+
+*   你必须在一台已经加入域的计算机上操作，通常是域控制器（Domain Controller）或安装了远程服务器管理工具（RSAT）的管理工作站。
+*   你需要拥有执行相应 AD 操作的权限。
+
+##### **6.4.1. 安装与导入 AD 模块**
+
+要在 PowerShell 中管理 AD，首先需要确保 `ActiveDirectory` 模块可用。
+
+*   **在域控制器上**： 当一台服务器被提升为域控制器时，`ActiveDirectory` 模块通常会作为 Active Directory 域服务 (AD DS) 角色的一部分被**自动安装**。
+    
+*   **在管理工作站上 (如 Windows 10/11)**： 你需要安装**远程服务器管理工具 (RSAT)** 中的 "Active Directory Domain Services and Lightweight Directory Services Tools"。
+    
+    powershell
+    
+    ```powershell
+    # 在 Windows 10/11 中，可以通过 "管理可选功能" 来安装
+    # 以下命令会安装所有 RSAT 工具，包括 AD 工具
+    Add-WindowsCapability -Online -Name "Rsat.Tools.Installer.Proxy"
+     
+    # 或者更精确地只安装 AD DS 和 AD LDS 工具
+    Add-WindowsCapability -Online -Name "Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0"
+    ```
+    
+*   **导入模块** 安装完成后，通常无需手动导入。得益于模块的自动加载特性，当你第一次使用 `Get-ADUser` 等 AD 命令时，模块会自动导入。如果需要手动导入，可以执行：
+    
+    powershell
+    
+    ```powershell
+    Import-Module ActiveDirectory
+    
+    ```
+    
+
+##### **6.4.2. 用户与计算机账户管理**
+
+用户和计算机账户是 AD 中最常见的两类对象。AD 模块为此提供了一系列遵循 `动词-AD名词` 命名规范的 Cmdlet。
+
+*   **查询 (Get)** `Get-ADUser` 和 `Get-ADComputer` 是最基础的查询命令。
+    
+    *   **`-Identity`**：根据一个唯一的标识符（如 SamAccountName, UserPrincipalName, DistinguishedName, GUID）来获取单个对象。
+    *   **`-Filter`**：使用 PowerShell 表达式语法进行复杂的、基于属性的查询。这是最强大的参数。
+    *   **`-Properties`**：默认情况下，`Get-ADUser` 只返回少量基本属性。要获取其他属性（如 `EmailAddress`, `LastLogonDate`），必须使用此参数明确指定。
+    
+    **示例：** 
+    
+    powershell
+    
+    ```powershell
+    # 获取单个用户 Alice 的信息
+    Get-ADUser -Identity "alice"
+     
+    # 获取 Alice 的所有属性
+    Get-ADUser -Identity "alice" -Properties *
+     
+    # 查找市场部 (Marketing) 所有被禁用的用户账户
+    Get-ADUser -Filter { Department -eq "Marketing" -and Enabled -eq $false } -Properties Department, Enabled
+     
+    # 查找所有超过90天未登录的 Windows Server 计算机账户
+    $timespan = New-TimeSpan -Days 90
+    Get-ADComputer -Filter 'OperatingSystem -like "*Windows Server*"' -Properties LastLogonDate | Where-Object { $_.LastLogonDate -lt ((Get-Date) - $timespan) }
+    ```
+    
+*   **创建、修改和删除**
+    
+    *   `New-ADUser`, `New-ADComputer`
+    *   `Set-ADUser`, `Set-ADComputer`
+    *   `Remove-ADUser`, `Remove-ADComputer`
+    *   `Enable-ADAccount`, `Disable-ADAccount`
+    *   `Unlock-ADAccount`
+    
+    **示例：创建一个新用户并设置其属性**
+    
+    powershell
+    
+    ```powershell
+    $userParams = @{
+        Name = "Bob Smith"
+        GivenName = "Bob"
+        Surname = "Smith"
+        SamAccountName = "bob.smith"
+        UserPrincipalName = "bob.smith@corp.contoso.com"
+        Path = "OU=Sales,OU=Users,DC=corp,DC=contoso,DC=com" # 指定用户创建在哪个组织单位 (OU)
+        AccountPassword = (Read-Host -AsSecureString "请输入新用户的密码:")
+        Enabled = $true
+        ChangePasswordAtLogon = $true
+    }
+    New-ADUser @userParams
+     
+    # 修改 Bob 的办公室和电话号码
+    Set-ADUser -Identity "bob.smith" -Office "Building 3, Room 404" -OfficePhone "123-456-7890"
+     
+    # 禁用 Bob 的账户
+    Disable-ADAccount -Identity "bob.smith"
+    ```
+    
+
+##### **6.4.3. 组织单位（OU）与组管理**
+
+*   **组织单位 (Organizational Unit, OU)**：是 AD 中用于组织对象（如用户、组、计算机）的容器，便于委派管理和应用组策略。
+    
+    *   `Get-ADOrganizationalUnit`
+    *   `New-ADOrganizationalUnit`
+    *   `Set-ADOrganizationalUnit`
+    *   `Remove-ADOrganizationalUnit`
+*   **组 (Group)**：用于集合用户或计算机，以便于统一分配权限和权限。
+    
+    *   `Get-ADGroup`, `New-ADGroup`, `Set-ADGroup`, `Remove-ADGroup`
+    *   `Get-ADGroupMember`：获取组成员。
+    *   `Add-ADGroupMember`：添加成员到组。
+    *   `Remove-ADGroupMember`：从组中移除成员。
+    
+    **示例：创建一个新的安全组，并添加成员**
+    
+    powershell
+    
+    ```powershell
+    # 在指定的 OU 下创建一个名为 "Project-X-Members" 的全局安全组
+    New-ADGroup -Name "Project-X-Members" -GroupScope Global -GroupCategory Security -Path "OU=Groups,DC=corp,DC=contoso,DC=com"
+     
+    # 将用户 Alice 和 Bob 添加到这个组中
+    Add-ADGroupMember -Identity "Project-X-Members" -Members "alice", "bob.smith"
+     
+    # 验证组成员
+    Get-ADGroupMember -Identity "Project-X-Members"
+    ```
+    
+
+##### **6.4.4. 批量操作：结合 CSV 文件，实现大规模自动化**
+
+AD 模块的真正威力，在于其与 PowerShell 管道和数据处理能力的无缝结合，特别是处理批量任务。当需要创建数百个新用户，或更新大量用户的信息时，结合 CSV 文件是最常见的解决方案。
+
+**场景：根据人力资源部提供的 CSV 文件，批量创建新员工账户。** 
+
+1.  **准备 CSV 文件 (`new_hires.csv`)**
+    
+    csv
+    
+    ```powershell
+    FirstName,LastName,Department,Title,ManagerSamAccountName
+    Charlie,Brown,IT,System Administrator,davis
+    Diana,Prince,Sales,Account Executive,johnson
+    Peter,Parker,Photography,Photographer,davis
+    ```
+    
+2.  **编写 PowerShell 脚本**
+    
+    powershell
+    
+    ```powershell
+    # 导入 CSV 数据
+    $newHires = Import-Csv -Path ".\new_hires.csv"
+     
+    # 获取域名信息，用于构建 UPN 和 Manager DN
+    $domain = (Get-ADDomain).DNSRoot
+    $domainDN = (Get-ADDomain).DistinguishedName
+     
+    # 循环处理每一行数据
+    foreach ($hire in $newHires) {
+        $samAccountName = "$($hire.FirstName.ToLower()).$($hire.LastName.ToLower())"
+        $userPrincipalName = "$samAccountName@$domain"
+        $managerDN = (Get-ADUser -Identity $hire.ManagerSamAccountName).DistinguishedName
+     
+        $userParams = @{
+            Name = "$($hire.FirstName) $($hire.LastName)"
+            GivenName = $hire.FirstName
+            Surname = $hire.LastName
+            SamAccountName = $samAccountName
+            UserPrincipalName = $userPrincipalName
+            Department = $hire.Department
+            Title = $hire.Title
+            Manager = $managerDN
+            Path = "OU=NewHires,DC=$($domain.Replace('.',',DC='))"
+            AccountPassword = (ConvertTo-SecureString "P@ssw0rd123!" -AsPlainText -Force)
+            Enabled = $true
+            ChangePasswordAtLogon = $true
+        }
+     
+        try {
+            New-ADUser @userParams -ErrorAction Stop
+            Write-Host "成功创建用户: $samAccountName"
+        }
+        catch {
+            Write-Warning "创建用户 $samAccountName 失败: $($_.Exception.Message)"
+        }
+    }
+    ```
+    
+
+这种“数据驱动”的脚本模式，将数据（CSV）与逻辑（PowerShell）分离，是实现可重复、可扩展、高效的 Active Directory 批量管理的典范。它能将过去需要数天手动操作的工作，压缩到几分钟之内完成，极大地解放了系统管理员的生产力。
+
+* * *
