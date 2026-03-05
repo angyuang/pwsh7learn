@@ -1,0 +1,634 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第九章安全与最佳实践 - PowerShell7从入门到精通</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-49765cd5.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-d1081bac.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">PowerShell7从入门到精通</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h3 id="第九章安全与最佳实践"><a class="header" href="#第九章安全与最佳实践"><strong>第九章：安全与最佳实践</strong></a></h3>
+<p>欢迎来到 PowerShell 精通之路的最后一章。在本章中，我们将从追求“功能实现”的技术层面，上升到追求“专业、安全、高效、可维护”的工程化和职业化层面。一个卓越的 PowerShell 专家，不仅要能编写出解决问题的代码，更要能编写出让同事信赖、让系统安全、让未来可期的代码。本章将聚焦于 PowerShell 的安全体系、编码的最佳实践以及现代化的版本控制，为你的 PowerShell 技能树点亮最后，也是最闪亮的几颗星。</p>
+<hr>
+<h4 id="91-powershell-安全深度解析"><a class="header" href="#91-powershell-安全深度解析"><strong>9.1. PowerShell 安全深度解析</strong></a></h4>
+<p>PowerShell 自诞生之日起，就身处安全攻防的风暴中心。它强大的能力使其成为系统管理员的得力助手，也同样吸引了攻击者的目光。因此，微软在 PowerShell 中内置了多层次、纵深防御的安全特性。理解这些特性，并正确地使用它们，是每一个负责任的 PowerShell 使用者的必修课。</p>
+<h5 id="911-执行策略的真相它不是一个安全边界而是一个安全带"><a class="header" href="#911-执行策略的真相它不是一个安全边界而是一个安全带"><strong>9.1.1. 执行策略的真相：它不是一个安全边界，而是一个安全带</strong></a></h5>
+<p>**执行策略（Execution Policy）**是 PowerShell 新手遇到的第一个，也是最常被误解的安全特性。</p>
+<ul>
+<li>
+<p><strong>它的作用是什么？</strong> 执行策略的<strong>唯一目的</strong>，是<strong>防止用户无意中运行了不可信的脚本</strong>。它就像汽车上的安全带，旨在防止因意外或疏忽造成的伤害，但它无法阻止一个执意要解开它、猛踩油门的司机。</p>
+</li>
+<li>
+<p><strong>常见的策略级别：</strong></p>
+<ul>
+<li><code>Restricted</code>：默认策略。不允许运行任何脚本文件。</li>
+<li><code>AllSigned</code>：只允许运行由受信任的发布者签名的脚本。</li>
+<li><code>RemoteSigned</code>：允许运行本地创建的脚本；对于从网络下载的脚本，则必须由受信任的发布者签名。这是服务器环境中最推荐的策略。</li>
+<li><code>Unrestricted</code>：允许运行所有脚本，但在运行从网络下载的未签名脚本时会提示用户。</li>
+<li><code>Bypass</code>：什么都不阻止，什么都不提示。</li>
+</ul>
+</li>
+<li>
+<p><strong>它为什么不是一个安全边界？</strong> 执行策略<strong>只对 <code>powershell.exe</code> 直接运行 <code>.ps1</code> 文件生效</strong>。有无数种方法可以轻松地绕过它，例如：</p>
+<p>powershell</p>
+<pre><code class="language-powershell"># 将脚本内容通过管道传递给 powershell.exe
+Get-Content .\MyScript.ps1 | powershell.exe -noprofile -
+ 
+# 使用 -EncodedCommand 参数
+$command = Get-Content .\MyScript.ps1
+$bytes = [System.Text.Encoding]::Unicode.GetBytes($command)
+$encodedCommand = [Convert]::ToBase64String($bytes)
+powershell.exe -EncodedCommand $encodedCommand
+</code></pre>
+<p><strong>结论</strong>：永远不要依赖执行策略来保护你的系统免受恶意脚本的攻击。它只是一个防止意外操作的“安全带”，而不是一个坚不可摧的“防火墙”。真正的安全，需要依赖下面将要介绍的更强大的机制。</p>
+</li>
+</ul>
+<h5 id="912-代码签名为你的脚本提供身份和完整性保证"><a class="header" href="#912-代码签名为你的脚本提供身份和完整性保证"><strong>9.1.2. 代码签名：为你的脚本提供身份和完整性保证</strong></a></h5>
+<p>如果执行策略是“安全带”，那么**代码签名（Code Signing）**就是脚本的“数字身份证”和“防伪封条”。它通过公钥加密技术，为你的脚本提供了两个至关重要的安全保证：</p>
+<ol>
+<li><strong>身份验证（Authentication）</strong>：确认脚本的作者是谁，且该作者是可信的。</li>
+<li><strong>完整性（Integrity）</strong>：保证脚本从签名那一刻起，内容没有被任何人篡改过。哪怕只修改了一个空格，签名也会立即失效。</li>
+</ol>
+<p><strong>工作流程：</strong></p>
+<ol>
+<li>
+<p><strong>获取代码签名证书</strong>：你可以从公共证书颁发机构（CA）购买，或者在企业内部搭建自己的 PKI 环境来颁发。</p>
+</li>
+<li>
+<p><strong>签名脚本</strong>：使用 <code>Set-AuthenticodeSignature</code> Cmdlet，将你的证书应用到 <code>.ps1</code> 或 <code>.psm1</code> 文件上。</p>
+<p>powershell</p>
+<pre><code class="language-powershell"># 获取你的证书
+$cert = Get-ChildItem -Path Cert:\CurrentUser\My -CodeSigningCert
+ 
+# 对脚本进行签名
+Set-AuthenticodeSignature -FilePath ".\My-Critical-Script.ps1" -Certificate $cert
+</code></pre>
+</li>
+<li>
+<p><strong>部署与执行</strong>：将签名的脚本分发到目标计算机。在执行策略为 <code>AllSigned</code> 或 <code>RemoteSigned</code> 的环境下，用户可以无缝地运行这个脚本，因为系统能够验证其来源可信且内容完整。</p>
+</li>
+</ol>
+<p>在企业环境中，对所有生产环境的自动化脚本进行强制代码签名，是一项至关重要的安全最佳实践。</p>
+<h5 id="913-jea-just-enough-administration实现最小权限委托管理的艺术"><a class="header" href="#913-jea-just-enough-administration实现最小权限委托管理的艺术"><strong>9.1.3. JEA (Just Enough Administration)：实现最小权限委托管理的艺术</strong></a></h5>
+<p><strong>JEA (Just Enough Administration)</strong> 是 PowerShell 中一项革命性的安全技术，它是**最小权限原则（Principle of Least Privilege）**的完美体现。</p>
+<p><strong>核心思想</strong>： 在传统模式下，如果一个初级管理员需要重启一项服务，你可能需要给予他服务器的本地管理员权限，但这同时也赋予了他执行其他所有管理操作的潜在能力，风险极高。 而 JEA 允许你创建一个受限的、基于角色的管理端点（Endpoint）。当用户通过 PowerShell Remoting 连接到这个 JEA 端点时，他们<strong>不再拥有自己的全部权限</strong>，而是只能执行你<strong>预先精确定义好的一小部分命令</strong>，并且这些命令在后台是以一个高权限的虚拟账户身份运行的。</p>
+<p><strong>示例：创建一个只允许重启网站服务和查看日志的 JEA 角色</strong></p>
+<ol>
+<li>
+<p><strong>创建角色能力文件 (<code>.psrc</code>)</strong>：定义允许执行的命令。</p>
+<p>powershell</p>
+<pre><code class="language-powershell"># WebAdmin.psrc
+@{
+    VisibleCmdlets = 'Get-Website', 'Restart-Website', 'Get-LogContent' # 假设这些是你自己写的函数
+    # 甚至可以限制参数
+    VisibleFunctions = @{ Name = 'Restart-Website'; Parameters = @{ Name = 'Name'; ValidateSet = 'Default Web Site', 'AdminPortal' } }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>创建会话配置文件 (<code>.pssc</code>)</strong>：将角色映射到用户或组，并指定运行身份。</p>
+<p>powershell</p>
+<pre><code class="language-powershell"># WebAdminSession.pssc
+@{
+    SessionType = 'RestrictedRemoteServer'
+    RunAsVirtualAccount = $true
+    RoleDefinitions = @{
+        'CONTOSO\WebAppAdmins' = @{ RoleCapabilities = 'WebAdmin' }
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>注册 JEA 端点</strong>：<code>Register-PSSessionConfiguration -Name "WebAdminJEA" -Path ".\WebAdminSession.pssc"</code></p>
+</li>
+</ol>
+<p>现在，当 <code>CONTOSO\WebAppAdmins</code> 组的成员连接时，他们必须指定这个端点： <code>Enter-PSSession -ComputerName "SRV01" -ConfigurationName "WebAdminJEA"</code> 在这个会话中，他们输入 <code>Get-Command</code>，会发现只能看到 <code>Get-Website</code> 等寥寥几个被授权的命令。他们成功地重启了网站，但完全无法执行任何其他危险操作。</p>
+<p>JEA 是一种强大的、精细化的权限委托机制，它让你可以在不授予用户高权限的情况下，安全地将日常运维任务委托出去，是提升企业运维安全性的终极武器。</p>
+<h5 id="914-日志记录与审计利用脚本块日志和模块日志来追踪-powershell-活动"><a class="header" href="#914-日志记录与审计利用脚本块日志和模块日志来追踪-powershell-活动"><strong>9.1.4. 日志记录与审计：利用脚本块日志和模块日志来追踪 PowerShell 活动</strong></a></h5>
+<p>如果说前面的机制是“预防”，那么**日志记录（Logging）**就是“检测”和“响应”的基石。当安全事件发生后，详尽的日志是进行事后追溯和取证分析的唯一依据。PowerShell 提供了极其强大的日志记录能力。</p>
+<p>你需要通过组策略（Group Policy）或直接修改注册表来启用以下两种最重要的日志：</p>
+<ol>
+<li>
+<p><strong>模块日志记录 (Module Logging)</strong>：</p>
+<ul>
+<li><strong>作用</strong>：记录特定模块中 Cmdlet 的执行情况。</li>
+<li><strong>配置</strong>：你可以指定要监控的模块名称（如 <code>ActiveDirectory</code>, <code>ServerManager</code>）。当这些模块中的任何命令被执行时，PowerShell 会记录下完整的命令、参数和执行者信息。</li>
+<li><strong>日志位置</strong>：<code>Windows Logs -&gt; PowerShell</code> 事件日志，事件 ID 4103。</li>
+</ul>
+</li>
+<li>
+<p><strong>脚本块日志记录 (Script Block Logging)</strong>：</p>
+<ul>
+<li><strong>作用</strong>：这是最强大的日志功能。它会记录<strong>所有</strong>在系统上被处理的 PowerShell 脚本块的内容。无论是直接在控制台输入的命令，还是执行的 <code>.ps1</code> 文件，甚至是动态生成的、混淆过的恶意代码，只要它被 PowerShell 引擎执行，其<strong>原始的、解密后的内容</strong>就会被记录下来。</li>
+<li><strong>配置</strong>：强烈建议在所有关键服务器和工作站上启用此功能。</li>
+<li><strong>日志位置</strong>：<code>Applications and Services Logs -&gt; Microsoft -&gt; Windows -&gt; PowerShell -&gt; Operational</code> 事件日志，事件 ID 4104。</li>
+</ul>
+</li>
+</ol>
+<p>脚本块日志记录是检测无文件攻击、内存中执行的恶意 PowerShell 代码的“天眼”。它让攻击者在 PowerShell 世界中的一举一动都无所遁形。将这些日志集中收集到 SIEM (安全信息和事件管理) 系统中进行分析，是现代企业安全监控体系的关键一环。</p>
+<hr>
+<p>通过对 PowerShell 安全体系的深度解析，我们学会了如何像一位安全架构师一样，构建一个纵深防御的自动化环境。我们明白了执行策略的局限，掌握了代码签名的价值，领略了 JEA 的精妙，并认识到了日志审计的不可或-缺。将这些安全实践融入到你的日常工作中，你手中的 PowerShell，将永远是一股建设性的、值得信赖的、守护系统的强大力量。</p>
+<hr>
+<h4 id="92-编写高效可读的-powershell-代码"><a class="header" href="#92-编写高效可读的-powershell-代码"><strong>9.2. 编写高效、可读的 PowerShell 代码</strong></a></h4>
+<p>在上一节中，我们为我们的 PowerShell 王国构建了坚固的“城墙”和灵敏的“岗哨”，学会了如何从安全专家的角度来审视和保护我们的工作成果。现在，我们要将目光从外部的防御，转向内部的“城市建设”。</p>
+<p>一个伟大的王国，不仅要有强大的防御，更要有优美的建筑、通畅的道路和高效的工匠。同样，一个卓越的 PowerShell 专家，不仅要能实现功能，更要能编写出“优美”的代码。这种“优美”，意味着代码不仅能正确工作，还易于阅读、便于协作、运行高效、经得起时间的考验。</p>
+<p>本节，我们将学习成为一名 PowerShell 的“软件工匠”。我们将学习社区公认的“建筑规范”（风格指南），探索提升“物流效率”（性能优化）的技巧，并掌握为我们的作品撰写清晰“说明书”（注释）的艺术。这不仅关乎个人技艺的提升，更体现了一名专业工程师的素养与对团队的责任感。</p>
+<p>代码是写给人读的，只是偶尔让计算机执行一下。这句软件工程领域的名言，在 PowerShell 的世界里同样适用。随着你的脚本变得越来越复杂，或者当你开始与团队成员协作时，代码的质量——它的可读性、一致性和性能——就变得与它的功能本身同等重要。本节将为你提供一套经过社区千锤百炼的最佳实践，帮助你编写出既强大又优雅的专业级 PowerShell 代码。</p>
+<h5 id="921-社区风格指南遵循-psscriptanalyzer-的建议编写规范的代码"><a class="header" href="#921-社区风格指南遵循-psscriptanalyzer-的建议编写规范的代码"><strong>9.2.1. 社区风格指南：遵循 PSScriptAnalyzer 的建议，编写规范的代码</strong></a></h5>
+<p>在任何一门成熟的编程语言中，社区都会逐渐形成一套广为接受的编码风格指南，以确保代码的一致性和可读性。PowerShell 也不例外。幸运的是，我们不需要去死记硬背这些规则，因为我们有一个强大的自动化工具——<strong>PSScriptAnalyzer</strong>。</p>
+<p><strong>PSScriptAnalyzer</strong> 是一个由 PowerShell 团队官方发布的静态代码分析工具。它会检查你的脚本，并根据社区的最佳实践规则集，给出改进建议、警告甚至错误。它就像一位时刻在你身边、经验丰富的代码审查专家。</p>
+<ul>
+<li>
+<p><strong>安装与使用</strong>：</p>
+<p>powershell</p>
+<pre><code class="language-powershell"># 从 PowerShell Gallery 安装
+Install-Module -Name PSScriptAnalyzer -Scope CurrentUser
+ 
+# 对单个脚本文件进行分析
+Invoke-ScriptAnalyzer -Path ".\My-Script.ps1"
+ 
+# 对整个模块目录进行递归分析
+Invoke-ScriptAnalyzer -Path ".\MyModule\" -Recurse
+</code></pre>
+</li>
+<li>
+<p><strong>它能帮你发现什么？</strong></p>
+<ul>
+<li><strong>使用未声明的变量</strong>：避免因拼写错误导致的逻辑错误。</li>
+<li><strong>使用 Cmdlet 别名</strong>：在脚本中应使用完整的 Cmdlet 名称（如 <code>Get-ChildItem</code> 而不是 <code>ls</code>），以增强可读性。别名只推荐在交互式控制台中使用。</li>
+<li><strong>硬编码的路径或凭据</strong>：提醒你将这些值参数化，以提高脚本的通用性和安全性。</li>
+<li><strong>不规范的大小写</strong>：建议 Cmdlet 和参数使用 <code>PascalCase</code>，变量使用 <code>camelCase</code> 或 <code>PascalCase</code>。</li>
+<li><strong>未使用的变量</strong>：帮助你清理冗余代码。</li>
+<li><strong>以及更多…</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>与 VS Code 集成</strong>： 当你安装了 PowerShell 扩展后，VS Code 会<strong>自动集成 PSScriptAnalyzer</strong>。它会在你编写代码时，实时地在问题代码下画出绿色的波浪线，并将鼠标悬停在上面时，给出详细的修改建议。</p>
+</li>
+</ul>
+<p><strong>最佳实践</strong>：将 <code>PSScriptAnalyzer</code> 作为你开发流程中不可或缺的一环。在提交代码前运行一次分析，并解决所有问题。这能极大地提升你的代码质量，并让你养成良好的编码习惯。</p>
+<h5 id="922-性能优化技巧避免管道中的性能陷阱"><a class="header" href="#922-性能优化技巧避免管道中的性能陷阱"><strong>9.2.2. 性能优化技巧：避免管道中的性能陷阱</strong></a></h5>
+<p>PowerShell 的管道非常强大，但也可能成为性能瓶颈，尤其是在处理大量数据时。理解其工作原理并采取相应的优化措施，能让你的脚本运行效率产生质的飞跃。</p>
+<ul>
+<li>
+<p><strong>尽早过滤（Filter Left）</strong>： 这是最重要的 PowerShell 性能优化原则。管道的工作方式是逐个传递对象。你应该在管道的最左端（尽可能早地）就过滤掉不需要的数据，而不是将所有数据都传递到管道的右端再进行筛选。</p>
+<p><strong>反例（慢）</strong>：</p>
+<p>powershell</p>
+<pre><code class="language-powershell"># 获取所有服务，传递给 Where-Object 进行筛选
+Get-Service | Where-Object { $_.Status -eq 'Running' }
+</code></pre>
+<p><strong>正例（快）</strong>：</p>
+<p>powershell</p>
+<pre><code class="language-powershell"># 利用 Get-Service 自带的 -State 参数，在源头就完成筛选
+Get-Service -State Running
+</code></pre>
+<p>许多 Cmdlet（如 <code>Get-ChildItem</code>, <code>Get-ADUser</code>, <code>Get-CimInstance</code>）都提供了 <code>-Filter</code>, <code>-Include</code> 等参数。利用这些参数进行“左过滤”，可以让数据在源头就被筛选掉，极大地减少了通过管道传输的对象数量，效率天差地别。</p>
+</li>
+<li>
+<p><strong>避免在 <code>ForEach-Object</code> 中重复获取数据</strong>： 当在循环中需要重复使用某个不变的数据集时，应在循环外部预先将其加载到变量中。</p>
+<p><strong>反例（极慢）</strong>：</p>
+<p>powershell</p>
+<pre><code class="language-powershell">$userNames | ForEach-Object {
+    # 每次循环都去获取一次所有 AD 组，非常低效
+    $groups = Get-ADGroup -Filter *
+    # ...
+}
+</code></pre>
+<p><strong>正例（快）</strong>：</p>
+<p>powershell</p>
+<pre><code class="language-powershell"># 在循环开始前，一次性获取所有组
+$allGroups = Get-ADGroup -Filter *
+$userNames | ForEach-Object {
+    # 直接使用预先加载的数据
+    # ...
+}
+</code></pre>
+</li>
+<li>
+<p><strong>选择更快的运算符</strong>：</p>
+<ul>
+<li>在处理字符串时，<code>-like</code> 运算符（使用通配符）通常比 <code>-match</code> 运算符（使用正则表达式）要快得多。如果简单的通配符就能满足需求，就不要使用正则表达式。</li>
+<li>在比较集合时，<code>-contains</code> 运算符（检查左侧集合是否包含右侧的单个项）通常比 <code>-in</code> 运算符（检查左侧单个项是否存在于右侧集合中）性能更好，尤其是在大集合中。</li>
+</ul>
+</li>
+<li>
+<p><strong>使用 <code>StringBuilder</code> 来构建大字符串</strong>： 在循环中反复使用 <code>+=</code> 来拼接字符串，会因为每次都创建新字符串而导致性能急剧下降。对于需要构建大字符串的场景，应使用 .NET 的 <code>System.Text.StringBuilder</code> 类。</p>
+<p><strong>正例（高效）</strong>：</p>
+<p>powershell</p>
+<pre><code class="language-powershell">$sb = [System.Text.StringBuilder]::new()
+1..10000 | ForEach-Object {
+    [void]$sb.Append("Line $_`n")
+}
+$finalString = $sb.ToString()
+</code></pre>
+</li>
+</ul>
+<h5 id="923-注释的艺术编写自己和别人都能看懂的注释"><a class="header" href="#923-注释的艺术编写自己和别人都能看懂的注释"><strong>9.2.3. 注释的艺术：编写自己和别人都能看懂的注释</strong></a></h5>
+<p>好的代码应当是自解释的，但好的注释则能提供代码本身无法表达的上下文和意图。注释不是代码的复述，而是代码的“为什么”和“是什么”。</p>
+<ul>
+<li>
+<p><strong>注释什么？</strong></p>
+<ul>
+<li>
+<p><strong>“为什么”这么做</strong>：解释你做出某个特定设计决策的原因。为什么选择这个算法？为什么这里要特殊处理某个边界情况？</p>
+<p>powershell</p>
+<pre><code class="language-powershell"># 使用 -Filter 而不是 Where-Object，因为 AD 的 LDAP 筛选器在域控制器端执行，效率更高。
+Get-ADUser -Filter "Name -like '*$name*'"
+</code></pre>
+</li>
+<li>
+<p><strong>复杂的逻辑</strong>：为一段复杂的正则表达式、算法或业务逻辑提供一个简明的自然语言摘要。</p>
+<p>powershell</p>
+<pre><code class="language-powershell"># 这个正则表达式用于匹配一个有效的语义化版本号 (e.g., 1.2.3-beta.4)
+$semVerPattern = '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+</code></pre>
+</li>
+<li>
+<p><strong>临时的解决方案或待办事项</strong>：使用 <code>TODO:</code> 或 <code>FIXME:</code> 等标准标签来标记需要后续关注的代码。</p>
+<p>powershell</p>
+<pre><code class="language-powershell"># TODO: 当前 API Key 是硬编码的，未来需要迁移到 Azure Key Vault。
+$apiKey = "secret-key"
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>注释的类型</strong>：</p>
+<ul>
+<li><strong>单行注释</strong>：使用 <code>#</code>，用于简短的行内或行上注释。</li>
+<li><strong>块注释</strong>：使用 <code>&lt;# ... #&gt;</code>，用于多行注释，或者临时注释掉一整块代码。</li>
+<li><strong>注释式帮助（Comment-Based Help）</strong>：我们在 5.1.3 节学过的，为函数编写专业的、可由 <code>Get-Help</code> 读取的帮助文档。这是任何一个要被重用的函数都应该拥有的“标配”。</li>
+</ul>
+</li>
+</ul>
+<p><strong>注释的黄金法则</strong>：编写注释时，想象一下六个月后的你，或者一个完全不了解这个项目的同事，他们需要知道什么才能快速理解并维护这段代码。</p>
+<hr>
+<p>通过遵循社区风格指南、掌握性能优化技巧和运用恰到好处的注释，我们正在将我们的代码，从一个能用的“工具”，升华为一件可信赖的“工艺品”。这样的代码，不仅运行得更出色，也为未来的维护和团队协作铺平了道路，这正是一位专业 PowerShell 工程师价值的真正体现。</p>
+<hr>
+<h4 id="93-使用-git-进行脚本版本控制"><a class="header" href="#93-使用-git-进行脚本版本控制"><strong>9.3. 使用 Git 进行脚本版本控制</strong></a></h4>
+<p>我们已经学会了如何构建坚不可摧的安全堡垒，也掌握了打造优雅高效代码的工匠技艺。现在，我们要为我们所有的心血结晶，请来一位最可靠的“历史学家”和“守护神”。</p>
+<p>想象一下，你精心编写的一个复杂脚本，在一次修改后突然无法工作了，你迫切地想知道“我到底改了什么？”；或者，你和你的团队成员需要同时对同一个模块进行开发，你们如何确保各自的工作不会相互覆盖、造成混乱？再或者，一场突如其来的灾难（如硬盘损坏）让你丢失了所有的代码，你是否有能力瞬间将它们恢复到任何一个历史版本？</p>
+<p>解决这一切问题的答案，就是<strong>版本控制（Version Control）</strong>。本节，我们将学习当今世界上最流行、最强大的版本控制系统——<strong>Git</strong>。掌握 Git，就如同为你的代码开启了“时光机”和“无限副本”的能力。它不仅是个人项目管理的利器，更是现代所有软件开发团队协作的基石。</p>
+<p>在专业的软件开发领域，任何没有被版本控制系统管理的代码，都可以被认为是“不存在的”。对于 PowerShell 脚本和模块开发而言，这个原则同样适用。将你的代码纳入版本控制，是你从“脚本小子”向“软件工程师”转变的最后，也是最关键的一步。本节将带你入门 Git，这个强大、免费、开源的分布式版本控制系统。</p>
+<h5 id="931-为何需要版本控制追踪变更协同工作安全回滚"><a class="header" href="#931-为何需要版本控制追踪变更协同工作安全回滚"><strong>9.3.1. 为何需要版本控制：追踪变更、协同工作、安全回滚</strong></a></h5>
+<p>版本控制系统（VCS）为你和你的团队带来了三大核心价值：</p>
+<ol>
+<li>
+<p><strong>完整的变更历史（时光机）</strong>：</p>
+<ul>
+<li>Git 会像一个一丝不苟的史官，记录下你对代码的<strong>每一次</strong>有意义的修改（称为一次“提交”或 “commit”）。</li>
+<li>每一次提交都包含了修改了哪些文件、具体修改了什么内容、是谁修改的、在什么时间修改的，以及<strong>为什么</strong>要修改（通过提交信息来描述）。</li>
+<li>你可以随时“穿越”回任何一个历史版本，查看当时的代码状态，或者比较任意两个版本之间的差异。</li>
+</ul>
+</li>
+<li>
+<p><strong>高效的协同工作（团队大脑）</strong>：</p>
+<ul>
+<li>Git 允许多个开发者在各自的计算机上，对同一个项目进行独立的、并行的开发，而不会相互干扰。</li>
+<li>它提供了一套强大的机制（如分支和合并），来帮助团队成员将各自完成的工作，安全、可控地整合到主代码库中。</li>
+<li>它充当了项目的“单一事实来源（Single Source of Truth）”，确保每个成员都工作在最新的、一致的代码基础上。</li>
+</ul>
+</li>
+<li>
+<p><strong>安全的分支与回滚（安全网）</strong>：</p>
+<ul>
+<li>你可以随时创建一个代码的“实验副本”（称为“分支”或 “branch”），在上面进行新功能开发或 Bug 修复，而完全不影响主版本的稳定性。实验成功后，再将其合并回去。</li>
+<li>如果一次更新引入了严重的问题，你可以通过 Git 在几秒钟之内，将整个项目“回滚”到上一个稳定版本，极大地降低了变更带来的风险。</li>
+</ul>
+</li>
+</ol>
+<h5 id="932-git-核心概念与命令"><a class="header" href="#932-git-核心概念与命令"><strong>9.3.2. Git 核心概念与命令</strong></a></h5>
+<p>要开始使用 Git，你需要先在你的系统上安装它（从 <a href="https://git-scm.com/" title="https://git-scm.com">https://git-scm.com</a> 下载），然后了解几个最核心的概念和命令。</p>
+<ul>
+<li><strong>仓库（Repository, or Repo）</strong>：这就是你的项目文件夹，Git 会在其中创建一个隐藏的 <code>.git</code> 子目录，用来存放所有的历史记录和元数据。</li>
+<li><strong>工作区（Working Directory）</strong>：你当前能看到和编辑的文件。</li>
+<li><strong>暂存区（Staging Area, or Index）</strong>：一个介于工作区和仓库之间的“待提交”区域。它允许你精确地选择工作区中的哪些变更，要被包含在下一次的提交中。</li>
+</ul>
+<p><strong>核心工作流与命令：</strong></p>
+<ol>
+<li>
+<p><strong><code>git init</code></strong>：在一个新的或已存在的项目文件夹中，初始化一个新的 Git 仓库。</p>
+<p>bash</p>
+<pre><code class="language-powershell">cd C:\MyPowerShellModule
+git init
+</code></pre>
+</li>
+<li>
+<p><strong><code>git add &lt;file&gt;</code></strong>：将工作区中指定文件的变更，添加到暂存区。</p>
+<p>bash</p>
+<pre><code class="language-powershell"># 将单个文件的变更添加到暂存区
+git add .\MyModule.psm1
+ 
+# 使用 . 来添加当前目录下所有文件的变更
+git add .
+</code></pre>
+</li>
+<li>
+<p><strong><code>git commit -m "Your commit message"</code></strong>：将暂存区中的所有变更，正式地“提交”到仓库中，形成一个新的历史版本。</p>
+<ul>
+<li>提交信息（commit message）至关重要！它应该简明扼要地描述“这次提交做了什么”。一个好的提交信息格式是：第一行是摘要（如 <code>Feat: Add user creation function</code>），空一行后是更详细的描述。</li>
+</ul>
+<p>bash</p>
+<pre><code class="language-powershell">git commit -m "Feat: Add initial function to create new users"
+</code></pre>
+</li>
+<li>
+<p><strong><code>git status</code></strong>：查看当前工作区和暂存区的状态。这是你最常用的命令，它会告诉你哪些文件被修改了、哪些文件在暂存区、哪些文件还没有被 Git 追踪。</p>
+</li>
+<li>
+<p><strong><code>git log</code></strong>：查看项目的提交历史。</p>
+</li>
+<li>
+<p><strong><code>git clone &lt;url&gt;</code></strong>：从一个远程服务器（如 GitHub）上，克隆一个已存在的仓库到你的本地计算机。</p>
+</li>
+<li>
+<p><strong><code>git pull</code></strong>：从远程仓库拉取最新的变更，并与你的本地工作区合并。</p>
+</li>
+<li>
+<p><strong><code>git push</code></strong>：将你的本地提交，推送到远程仓库，以便与团队成员分享。</p>
+</li>
+</ol>
+<h5 id="933-分支策略安全地进行新功能开发和-bug-修复"><a class="header" href="#933-分支策略安全地进行新功能开发和-bug-修复"><strong>9.3.3. 分支策略：安全地进行新功能开发和 Bug 修复</strong></a></h5>
+<p>**分支（Branch）**是 Git 最强大的功能，也是其精髓所在。一个分支，就是一条独立的时间线。</p>
+<ul>
+<li>
+<p><strong><code>main</code> (或 <code>master</code>) 分支</strong>：通常，仓库的主分支被称为 <code>main</code> 或 <code>master</code>。它应该永远保持稳定、可随时部署的状态。<strong>绝对不要直接在主分支上进行开发。</strong></p>
+</li>
+<li>
+<p><strong>功能分支（Feature Branch）</strong>：当你需要开发一个新功能时，你应该从 <code>main</code> 分支创建一个新的分支。</p>
+<p>bash</p>
+<pre><code class="language-powershell"># 从当前分支创建一个名为 "feature/add-logging" 的新分支，并切换过去
+git checkout -b feature/add-logging
+</code></pre>
+<p>现在，你可以在这个 <code>feature/add-logging</code> 分支上自由地进行编码、提交。所有的修改都只发生在这条独立的时间线上，完全不会影响到 <code>main</code> 分支。</p>
+</li>
+<li>
+<p><strong>合并（Merge）</strong>：当新功能开发完成并通过测试后，你就可以将这个功能分支，合并回 <code>main</code> 分支。</p>
+<p>bash</p>
+<pre><code class="language-powershell"># 1. 首先，切换回主分支
+git checkout main
+ 
+# 2. 确保主分支是最新状态
+git pull
+ 
+# 3. 将功能分支合并进来
+git merge feature/add-logging
+</code></pre>
+<p>Git 会智能地将功能分支上的所有变更，应用到 <code>main</code> 分支上。</p>
+</li>
+</ul>
+<p>这种“<strong>先开分支，再开发，后合并</strong>”的工作流，是所有专业团队的基本实践。它保证了主干的稳定，并使得并行开发成为可能。</p>
+<h5 id="934-将你的项目托管在-githubgitlab参与开源与团队协作"><a class="header" href="#934-将你的项目托管在-githubgitlab参与开源与团队协作"><strong>9.3.4. 将你的项目托管在 GitHub/GitLab：参与开源与团队协作</strong></a></h5>
+<p>虽然 Git 是分布式的，你完全可以在本地使用它。但要实现团队协作和代码备份，你需要一个<strong>远程仓库（Remote Repository）</strong>。<strong>GitHub</strong> 和 <strong>GitLab</strong> 是当今最流行的两个代码托管平台。</p>
+<p>它们为你提供了：</p>
+<ul>
+<li>一个在云端的、可靠的 Git 仓库存储。</li>
+<li>漂亮的 Web 界面来浏览代码、查看历史。</li>
+<li>强大的团队协作功能，如<strong>拉取请求（Pull Request, or Merge Request）</strong>。这是一个正式的、用于代码审查的流程：当你的功能分支完成后，你创建一个 PR，邀请团队成员来审查你的代码，提出修改意见。只有在代码被批准后，才能被合并到主分支。</li>
+<li>问题追踪（Issue Tracking）、项目看板（Project Boards）、自动化CI/CD（持续集成/持续部署）等一整套软件开发生命周期管理工具。</li>
+</ul>
+<p>将你的 PowerShell 模块托管在 GitHub 上，不仅能让你与团队高效协作，更是你向全世界展示你的技能、参与开源社区、为 PowerShell 生态做出贡献的最佳方式。</p>
+<hr>
+<p>至此，我们已经为我们的 PowerShell 之旅，画上了一个圆满的句号。通过掌握 Git，我们不仅为我们的代码找到了最可靠的“守护神”，更获得了通往现代软件工程和团队协作世界的“门票”。你手中的 PowerShell，已经不再仅仅是一门脚本语言，而是一个完整的、专业的、能够构建和管理复杂系统的强大平台。</p>
+<p>读者朋友们，请记住，这本书的结束，才是你真正精彩的 PowerShell 旅程的开始。带着这份知识、技能和专业的素养，去探索、去创造、去自动化你所能触及的一切吧！世界在你的脚下。</p>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="08第八章高级技术-释放PowerShell的全部潜能.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="10附录.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="08第八章高级技术-释放PowerShell的全部潜能.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="10附录.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,675 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第三章语法基石-构建你自己的命令 - PowerShell7从入门到精通</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-49765cd5.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-d1081bac.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">PowerShell7从入门到精通</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h3 id="第三章语法基石构建你自己的命令"><a class="header" href="#第三章语法基石构建你自己的命令"><strong>第三章：语法基石——构建你自己的命令</strong></a></h3>
+<p>在前两章的探索中，我们已经熟练地运用 PowerShell 提供的各种 Cmdlet 来执行任务，如同驾驶一辆性能优越的汽车。然而，真正的力量并不仅仅在于使用工具，更在于创造工具。本章，我们将从“驾驶员”的角色，向“工程师”的角色迈进，学习构建自定义逻辑和自动化方案所必需的语法基础。</p>
+<p>我们将深入 PowerShell 作为一门“脚本语言”的本质，学习如何定义变量来存储信息，如何运用运算符进行计算与比较，以及如何通过流程控制语句赋予脚本“思考”和“决策”的能力。这就像学习建筑的蓝图语言，一旦掌握，你将能够从简单的命令组合，跃升到构建复杂、智能、自动化的宏伟建筑。</p>
+<p>本章是连接“使用”与“创造”的桥梁。请以工程师的严谨和艺术家的想象力，来拥抱这些语法的基石。</p>
+<hr>
+<h4 id="31-变量与数据类型信息的容器"><a class="header" href="#31-变量与数据类型信息的容器"><strong>3.1. 变量与数据类型：信息的容器</strong></a></h4>
+<p>在任何编程语言中，最基本的需求都是存储和管理信息。一个脚本在执行过程中，需要临时记住一个文件名、一个用户列表、一个计算结果，或者一个系统状态。<strong>变量（Variable）</strong>，就是我们用来存放这些信息的“容器”。而信息本身，也有着不同的种类和格式，这便是<strong>数据类型（Data Type）</strong>。</p>
+<h5 id="311-声明与使用变量以--开头的魔法符号"><a class="header" href="#311-声明与使用变量以--开头的魔法符号"><strong>3.1.1. 声明与使用变量：以 <code>$</code> 开头的魔法符号</strong></a></h5>
+<p>在 PowerShell 中，变量的识别和使用规则非常简单直观：<strong>所有变量名都必须以美元符号 <code>$</code> 开头</strong>。</p>
+<ul>
+<li>
+<p><strong>声明与赋值</strong></p>
+<p>当你第一次给一个变量名赋值时，这个变量就被“声明”或创建了。赋值操作使用等号 <code>=</code>。</p>
+<pre><code class="language-powershell"># 声明一个名为 $message 的变量，并把字符串 "你好，PowerShell！" 存进去
+$message = "你好，PowerShell！"
+ 
+# 声明一个名为 $userCount 的变量，并把数字 100 存进去
+$userCount = 100
+</code></pre>
+</li>
+<li>
+<p><strong>使用变量</strong></p>
+<p>要使用变量中存储的值，只需在代码中写下它的名字即可。</p>
+<pre><code class="language-powershell"># 直接输出 $message 变量的内容
+$message
+ 
+# 在字符串中嵌入变量
+Write-Output "当前在线用户数：$userCount"
+</code></pre>
+<p>当你在双引号 <code>""</code> 括起来的字符串中包含变量时，PowerShell 会自动将其替换为变量所存储的值，这个特性被称为<strong>变量扩展（Variable Expansion）</strong>。</p>
+</li>
+<li>
+<p><strong>变量命名规则</strong></p>
+<ul>
+<li>必须以 <code>$</code> 开头。</li>
+<li><code>$</code> 后面可以跟字母、数字和下划线 <code>_</code>。</li>
+<li>建议使用有意义的驼峰命名法（CamelCase），如 <code>$userName</code> 或 <code>$logFilePath</code>，以增强代码的可读性。</li>
+</ul>
+</li>
+</ul>
+<h5 id="312-核心数据类型信息的不同形态"><a class="header" href="#312-核心数据类型信息的不同形态"><strong>3.1.2. 核心数据类型：信息的不同形态</strong></a></h5>
+<p>虽然 PowerShell 在赋值时会自动判断数据类型（这被称为“动态类型”），但理解其背后核心的数据类型，对于编写健壮的脚本至关重要。</p>
+<ul>
+<li>
+<p><strong>字符串 (String)</strong> 用于表示文本信息。可以用单引号 <code>' '</code> 或双引号 <code>"</code> 括起来。</p>
+<ul>
+<li><strong>双引号 <code>"</code></strong>：支持变量扩展。</li>
+<li><strong>单引号 <code>' '</code></strong>：纯粹的字面量，<strong>不</strong>会进行变量扩展。</li>
+</ul>
+<pre><code class="language-powershell">$name = "世界"
+$greetingWithVar = "你好, $name!"  # 输出: 你好, 世界!
+$greetingLiteral = '你好, $name!' # 输出: 你好, $name!
+</code></pre>
+</li>
+<li>
+<p><strong>整数 (Int)</strong> 用于表示没有小数部分的数字。</p>
+<pre><code class="language-powershell">$age = 30
+$fileCount = 1024
+</code></pre>
+</li>
+<li>
+<p><strong>数组 (Array)</strong> 一个有序的、可以存储多个值的集合。通过逗号 <code>,</code> 分隔元素来创建。</p>
+<pre><code class="language-powershell"># 创建一个包含多个服务器名称的数组
+$servers = "SRV01", "SRV02", "WEB01", "DB01"
+ 
+# 访问数组中的元素（索引从 0 开始）
+$servers[0]  # 输出: SRV01
+$servers[2]  # 输出: WEB01
+ 
+# 获取数组的长度
+$servers.Length # 输出: 4
+</code></pre>
+</li>
+<li>
+<p><strong>哈希表 (Hashtable)</strong> 也称为关联数组或字典。它存储的是<strong>键-值对 (Key-Value Pair)</strong> 的集合，提供了一种通过“名称”来查找“值”的快速方式。哈希表使用 <code>@{}</code> 语法创建，键值对之间用分号 <code>;</code> 分隔。</p>
+<pre><code class="language-powershell"># 创建一个描述用户信息的哈希表
+$userProfile = @{
+    Name = "张三";
+    UserID = 1001;
+    Department = "IT";
+    IsAdmin = $true  # $true 是布尔类型(Boolean)，表示“真”
+}
+ 
+# 通过键来访问值
+$userProfile.Name       # 输出: 张三
+$userProfile["UserID"]  # 输出: 1001
+ 
+# 添加新的键值对
+$userProfile.Email = "zhangsan@example.com"
+</code></pre>
+<p>哈希表在组织结构化数据、创建自定义对象以及为 Cmdlet 提供参数时（我们将在后面学到）非常有用。</p>
+</li>
+</ul>
+<h5 id="313-类型转换与检查确保容器里装的是对的东西"><a class="header" href="#313-类型转换与检查确保容器里装的是对的东西"><strong>3.1.3. 类型转换与检查：确保容器里装的是对的东西</strong></a></h5>
+<p>虽然 PowerShell 很灵活，但在某些情况下，我们需要精确地控制变量的数据类型，或者检查一个变量到底是什么类型。</p>
+<ul>
+<li>
+<p><strong>强制类型转换 (Casting)</strong></p>
+<p>可以在变量或值前面加上用方括号 <code>[]</code> 括起来的类型名称，来强制将其转换为该类型。</p>
+<pre><code class="language-powershell"># 将字符串 "123" 转换为整数
+$numberAsString = "123"
+$realNumber = [int]$numberAsString
+ 
+# 将数字转换为字符串
+$stringifiedNumber = [string]12345
+ 
+# 也可以在声明变量时就“锁定”它的类型
+[string]$name = "李四"
+# $name = 123 # 这行会报错，因为 $name 被锁定为只能存储字符串
+</code></pre>
+</li>
+<li>
+<p><strong>检查变量类型：<code>.GetType()</code> 方法</strong></p>
+<p>每个对象（包括变量中存储的值）都有一个名为 <code>GetType()</code> 的方法，可以告诉你它的确切类型。</p>
+<pre><code class="language-powershell">$myVar = 123
+$myVar.GetType()
+# 输出会告诉你它的类型是 System.Int32 (整数)
+ 
+$anotherVar = "Hello"
+$anotherVar.GetType()
+# 输出会告诉你它的类型是 System.String (字符串)
+ 
+$serverList = "SRV01", "SRV02"
+$serverList.GetType()
+# 输出会告诉你它的类型是 System.Object[] (对象数组)
+</code></pre>
+<p>在编写需要处理不同类型输入的复杂脚本时，检查数据类型是一个非常重要的调试和验证手段。</p>
+</li>
+</ul>
+<hr>
+<p>通过本节的学习，我们掌握了在 PowerShell 中存储、分类和检验信息的基本功。变量是脚本的记忆，而数据类型则是这份记忆的格式。有了这些“容器”，我们就可以开始装入数据，并准备在下一节中，用“运算符”这套工具来对它们进行加工和处理了。</p>
+<hr>
+<h4 id="32-运算符的舞台执行计算与比较"><a class="header" href="#32-运算符的舞台执行计算与比较"><strong>3.2. 运算符的舞台：执行计算与比较</strong></a></h4>
+<p>如果说变量是脚本中静止的“名词”，那么运算符就是连接和操作这些名词的“动词”和“连词”。它们是脚本逻辑的核心，负责执行从简单的数学加法到复杂的模式匹配等各种操作。PowerShell 的运算符体系清晰明了，一旦掌握，就能对数据进行随心所欲的加工和判断。</p>
+<h5 id="321-算术与赋值运算符一切计算的基础"><a class="header" href="#321-算术与赋值运算符一切计算的基础"><strong>3.2.1. 算术与赋值运算符：一切计算的基础</strong></a></h5>
+<p>这是最基础、最常见的一类运算符，与我们在数学课上学到的概念非常相似。</p>
+<ul>
+<li>
+<p><strong>算术运算符 (Arithmetic Operators)</strong> 它们用于执行基本的数学运算。</p>
+<ul>
+<li><code>+</code> (加法): <code>10 + 5</code> 结果是 <code>15</code>。当用于字符串时，它执行<strong>拼接</strong>操作：<code>"Hello" + "World"</code> 结果是 <code>"HelloWorld"</code>。</li>
+<li><code>-</code> (减法): <code>10 - 5</code> 结果是 <code>5</code>。</li>
+<li><code>*</code> (乘法): <code>10 * 5</code> 结果是 <code>50</code>。当用于字符串和数字时，它执行<strong>重复</strong>操作：<code>"Abc" * 3</code> 结果是 <code>"AbcAbcAbc"</code>。</li>
+<li><code>/</code> (除法): <code>10 / 5</code> 结果是 <code>2</code>。</li>
+<li><code>%</code> (取模/求余): <code>10 % 3</code> 结果是 <code>1</code>，因为 10 除以 3 商 3 余 1。</li>
+</ul>
+</li>
+<li>
+<p><strong>赋值运算符 (Assignment Operators)</strong> 它们用于给变量赋予新的值。</p>
+<ul>
+<li>
+<p><code>=</code> (基本赋值): <code>$a = 10</code> 将 <code>10</code> 存入变量 <code>$a</code>。</p>
+</li>
+<li>
+<p><code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code> (复合赋值): 这些是“计算并赋值”的简写形式，让代码更简洁。</p>
+<pre><code class="language-powershell">$count = 10
+$count += 5  # 等同于 $count = $count + 5。现在 $count 的值是 15。
+ 
+$message = "Log: "
+$message += "Process started." # 现在 $message 是 "Log: Process started."
+
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="322-比较运算符逻辑判断的标尺"><a class="header" href="#322-比较运算符逻辑判断的标尺"><strong>3.2.2. 比较运算符：逻辑判断的标尺</strong></a></h5>
+<p>当我们需要判断两个值是否相等、哪个更大或更小时，就需要使用比较运算符。这是 PowerShell 语法一个非常鲜明的特点：<strong>比较运算符都以连字符 <code>-</code> 开头</strong>，这主要是为了避免与重定向符号 <code>&lt;</code> 和 <code>&gt;</code> 产生混淆。</p>
+<ul>
+<li>
+<p><strong>相等性比较</strong></p>
+<ul>
+<li><code>-eq</code> (Equal): 等于。 <strong>注意：不区分大小写</strong>。</li>
+<li><code>-ne</code> (Not Equal): 不等于。</li>
+<li><code>-ceq</code> (Case-sensitive Equal): 等于，<strong>区分大小写</strong>。</li>
+<li><code>-cne</code> (Case-sensitive Not Equal): 不等于，<strong>区分大小写</strong>。</li>
+</ul>
+<pre><code class="language-powershell">"apple" -eq "Apple"  # 返回 $true
+"apple" -ceq "Apple" # 返回 $false
+100 -ne 99           # 返回 $true
+</code></pre>
+</li>
+<li>
+<p><strong>大小比较</strong></p>
+<ul>
+<li><code>-gt</code> (Greater Than): 大于。</li>
+<li><code>-ge</code> (Greater than or Equal): 大于或等于。</li>
+<li><code>-lt</code> (Less Than): 小于。</li>
+<li><code>-le</code> (Less than or Equal): 小于或等于。</li>
+</ul>
+<pre><code class="language-powershell">$age = 20
+$age -gt 18  # 返回 $true
+$age -le 20  # 返回 $true
+</code></pre>
+</li>
+<li>
+<p><strong>集合包含关系</strong></p>
+<ul>
+<li><code>-contains</code>: 包含。检查一个集合（如数组）是否包含某个元素。</li>
+<li><code>-notcontains</code>: 不包含。</li>
+<li><code>-in</code>: 在…之中。检查某个元素是否存在于一个集合中，语法上与 <code>-contains</code> 相反，更自然。</li>
+</ul>
+<pre><code class="language-powershell">$servers = "SRV01", "SRV02", "WEB01"
+$servers -contains "SRV02"  # 返回 $true
+"DB01" -in $servers         # 返回 $false
+</code></pre>
+</li>
+</ul>
+<h5 id="323-逻辑与模式匹配构建复杂的判断逻辑"><a class="header" href="#323-逻辑与模式匹配构建复杂的判断逻辑"><strong>3.2.3. 逻辑与模式匹配：构建复杂的判断逻辑</strong></a></h5>
+<p>当我们需要组合多个条件，或者检查文本是否符合某种模式时，就需要用到逻辑运算符和模式匹配运算符。</p>
+<ul>
+<li>
+<p><strong>逻辑运算符 (Logical Operators)</strong> 它们用于连接布尔值（<code>$true</code> 或 <code>$false</code>），形成更复杂的逻辑表达式。</p>
+<ul>
+<li><code>-and</code>: 逻辑与。只有当两边的表达式都为 <code>$true</code> 时，结果才为 <code>$true</code>。</li>
+<li><code>-or</code>: 逻辑或。只要两边的表达式中有一个为 <code>$true</code>，结果就为 <code>$true</code>。</li>
+<li><code>-not</code> (或 <code>!</code>): 逻辑非。反转一个布尔值，<code>$true</code> 变 <code>$false</code>，<code>$false</code> 变 <code>$true</code>。</li>
+</ul>
+<pre><code class="language-powershell">$age = 25
+$department = "IT"
+ 
+# 年龄大于 18 并且 部门是 "IT"
+($age -gt 18) -and ($department -eq "IT") # 返回 $true
+ 
+# 部门是 "HR" 或者 部门是 "IT"
+($department -eq "HR") -or ($department -eq "IT") # 返回 $true
+ 
+$isAdmin = $false
+-not $isAdmin # 返回 $true
+</code></pre>
+</li>
+<li>
+<p><strong>模式匹配运算符 (Matching Operators)</strong> 它们是处理字符串的强大工具，尤其在需要模糊匹配时。</p>
+<ul>
+<li><code>-like</code>: 通配符匹配。使用 <code>*</code> (匹配任意多个字符) 和 <code>?</code> (匹配单个字符) 进行简单的模式匹配。</li>
+<li><code>-notlike</code>: 与 <code>-like</code> 相反。</li>
+<li><code>-match</code>: 正则表达式匹配。使用功能更强大的正则表达式进行复杂的模式匹配。</li>
+<li><code>-notmatch</code>: 与 <code>-match</code> 相反。</li>
+</ul>
+<pre><code class="language-powershell">$filename = "SalesReport-2024-Q3.xlsx"
+ 
+# 使用 -like 检查文件名是否以 "SalesReport" 开头
+$filename -like "SalesReport*" # 返回 $true
+ 
+# 使用 -like 检查文件名是否包含 "2024"
+$filename -like "*2024*" # 返回 $true
+ 
+# 使用 -match 和正则表达式检查文件名是否包含四位数字
+# \d{4} 是一个正则表达式，表示“四个数字”
+$filename -match "\d{4}" # 返回 $true
+</code></pre>
+<p><code>-like</code> 简单易用，适合日常的文件名筛选等场景。而 <code>-match</code> 则为需要精细文本解析的高级用户打开了通往正则表达式世界的大门。</p>
+</li>
+</ul>
+<hr>
+<p>掌握了 PowerShell 的运算符，就等于掌握了处理数据的核心技能。无论是简单的加减乘除，还是复杂的逻辑判断与文本匹配，这些运算符都为我们提供了清晰、一致且强大的工具。现在，我们的脚本不仅能存储信息，还能对信息进行深度加工和智能判断了。接下来，我们将学习如何利用这些判断结果，来控制脚本的执行流程，让它真正地“思考”起来。</p>
+<hr>
+<h4 id="33-流程控制让脚本思考"><a class="header" href="#33-流程控制让脚本思考"><strong>3.3. 流程控制：让脚本“思考”</strong></a></h4>
+<p>流程控制是所有编程语言的灵魂。它让我们的脚本摆脱了僵硬的、从上到下的顺序执行模式，赋予其根据条件变化做出不同响应、以及重复执行任务的能力。在 PowerShell 中，流程控制语句的语法清晰且功能强大，它们是构建任何有意义的自动化方案的绝对核心。</p>
+<h5 id="331-条件判断在十字路口做出选择"><a class="header" href="#331-条件判断在十字路口做出选择"><strong>3.3.1. 条件判断：在十字路口做出选择</strong></a></h5>
+<p>生活中充满了选择，脚本的世界也是如此。当脚本执行到某个节点，需要根据一个或多个条件来决定下一步该怎么走时，我们就需要条件判断语句。</p>
+<ul>
+<li>
+<p><strong><code>If-ElseIf-Else</code>：经典的条件分支</strong></p>
+<p>这是最基础、最通用的条件判断结构。它的逻辑就像我们在日常生活中做决策一样：<strong>如果</strong>某个条件成立，就做A；<strong>否则，如果</strong>另一个条件成立，就做B；<strong>否则</strong>（如果以上条件都不成立），就做C。</p>
+<p><strong>语法结构：</strong></p>
+<pre><code class="language-powershell">if ( &lt;条件1&gt; ) {
+    # 如果条件1为 $true，则执行这里的代码块
+}
+elseif ( &lt;条件2&gt; ) {
+    # 如果条件1为 $false，但条件2为 $true，则执行这里的代码块
+}
+else {
+    # 如果以上所有条件都为 $false，则执行这里的代码块
+}
+</code></pre>
+<p><strong>示例：根据文件大小给出不同提示</strong></p>
+<pre><code class="language-powershell">$fileSize = (Get-Item -Path ".\mydata.csv").Length / 1MB # 获取文件大小并转换为MB
+ 
+if ($fileSize -gt 100) {
+    Write-Host "文件过大 ($([math]::Round($fileSize, 2)) MB)，建议分批处理。" -ForegroundColor Red
+}
+elseif ($fileSize -gt 10) {
+    Write-Host "文件大小适中 ($([math]::Round($fileSize, 2)) MB)。" -ForegroundColor Yellow
+}
+else {
+    Write-Host "文件很小 ($([math]::Round($fileSize, 2)) MB)，可以快速处理。" -ForegroundColor Green
+}
+</code></pre>
+<p><code>ElseIf</code> 和 <code>Else</code> 块都是可选的。你可以只有一个简单的 <code>If</code> 语句。</p>
+</li>
+<li>
+<p><strong><code>Switch</code>：优雅地处理多重选择</strong></p>
+<p>当你需要根据一个变量的多种不同取值来执行不同操作时，使用一长串的 <code>If-ElseIf-Else</code> 会显得很笨拙。这时，<code>Switch</code> 语句能提供一个更清晰、更优雅的解决方案。</p>
+<p><strong>语法结构：</strong></p>
+<pre><code class="language-powershell">switch ( &lt;要检查的变量或表达式&gt; ) {
+    &lt;值1&gt; { # 如果变量等于值1
+        # 执行这里的代码
+    }
+    &lt;值2&gt; { # 如果变量等于值2
+        # 执行这里的代码
+    }
+    # ...可以有任意多个分支
+    default { # 如果变量不匹配以上任何值
+        # 执行这里的代码
+    }
+}
+</code></pre>
+<p><strong>示例：根据服务状态执行不同操作</strong></p>
+<pre><code class="language-powershell">$serviceStatus = (Get-Service -Name "Spooler").Status
+ 
+switch ($serviceStatus) {
+    "Running" {
+        Write-Host "打印服务正在运行。"
+        # 可以选择重启服务
+        # Restart-Service -Name "Spooler"
+    }
+    "Stopped" {
+        Write-Host "打印服务已停止，正在尝试启动..."
+        Start-Service -Name "Spooler"
+    }
+    "Paused" {
+        Write-Host "打印服务已暂停。"
+    }
+    default {
+        Write-Host "无法确定打印服务状态：$serviceStatus"
+    }
+}
+</code></pre>
+<p><code>Switch</code> 语句在处理枚举值、状态码等场景时，能让代码的可读性大大提高。</p>
+</li>
+</ul>
+<h5 id="332-循环的节拍让任务自动重复"><a class="header" href="#332-循环的节拍让任务自动重复"><strong>3.3.2. 循环的节拍：让任务自动重复</strong></a></h5>
+<p>循环是自动化的核心。它让计算机能够不知疲倦地重复执行某个任务，无论是处理一个数组中的上千个元素，还是持续监控某个条件直到其满足为止。</p>
+<ul>
+<li>
+<p><strong><code>ForEach-Object</code>：管道中的循环利器 (别名: <code>foreach</code>)</strong></p>
+<p>这是 PowerShell 中最常用、最具特色的循环方式。它通常用在管道的中间，对从上一个命令传递过来的<strong>每一个对象</strong>执行相同的操作。</p>
+<p><strong>语法结构：</strong></p>
+<pre><code class="language-powershell">&lt;产生对象的命令&gt; | ForEach-Object {
+    # 这里的代码会对管道中传来的每一个对象执行一次
+    # 特殊变量 $_ 代表当前正在处理的对象
+}
+</code></pre>
+<p><strong>示例：停止所有名为 “note” 的进程</strong></p>
+<pre><code class="language-powershell"># 获取所有名字以 "note" 开头的进程，然后对每一个进程执行 Stop-Process
+Get-Process -Name "note*" | ForEach-Object {
+    Write-Host "正在停止进程 $($_.Name) (ID: $($_.Id))..."
+    $_ | Stop-Process -Force
+}
+</code></pre>
+<p><code>ForEach-Object</code> 完美体现了 PowerShell 的对象流思想，是处理集合的首选。</p>
+</li>
+<li>
+<p><strong><code>For</code> 循环：经典的计数循环</strong></p>
+<p>当你需要精确地控制循环的次数，或者需要一个步进的计数器时，<code>For</code> 循环是最佳选择。它包含三个部分：初始化、循环条件和循环后操作。</p>
+<p><strong>语法结构：</strong></p>
+<pre><code class="language-powershell">for ( &lt;初始化&gt;; &lt;循环条件&gt;; &lt;每次循环后执行的操作&gt; ) {
+    # 只要循环条件为 $true，就重复执行这里的代码
+}
+</code></pre>
+<p><strong>示例：打印从 1 到 5 的数字</strong></p>
+<pre><code class="language-powershell">for ($i = 1; $i -le 5; $i++) { # $i++ 是 $i = $i + 1 的简写
+    Write-Host "当前数字是: $i"
+}
+</code></pre>
+</li>
+<li>
+<p><strong><code>While</code> 循环：条件驱动的循环</strong></p>
+<p><code>While</code> 循环会在其指定的条件为 <code>$true</code> 时，持续不断地执行代码块。它适用于那些不知道具体要循环多少次，但知道循环应该在何种条件下停止的场景。</p>
+<p><strong>语法结构：</strong></p>
+<pre><code class="language-powershell">while ( &lt;循环条件&gt; ) {
+    # 只要循环条件为 $true，就重复执行这里的代码
+}
+</code></pre>
+<p><strong>示例：等待某个文件出现</strong></p>
+<pre><code class="language-powershell">$filePath = "C:\temp\signal.txt"
+Write-Host "正在等待文件 $filePath 出现..."
+ 
+while ( -not (Test-Path -Path $filePath) ) {
+    # 文件不存在，暂停 5 秒
+    Start-Sleep -Seconds 5
+    Write-Host "..." -NoNewline
+}
+ 
+Write-Host "文件已找到！继续执行后续任务。"
+</code></pre>
+<p><strong>警告</strong>：使用 <code>While</code> 循环时，务必确保循环体内部有逻辑能最终改变循环条件，使其变为 <code>$false</code>，否则将导致“死循环”。</p>
+</li>
+</ul>
+<h5 id="333-循环控制掌控循环的节奏"><a class="header" href="#333-循环控制掌控循环的节奏"><strong>3.3.3. 循环控制：掌控循环的节奏</strong></a></h5>
+<p>在循环执行的过程中，有时我们需要提前跳出整个循环，或者跳过当前这次循环的剩余部分，直接进入下一次。<code>Break</code> 和 <code>Continue</code> 就是为此而生的。</p>
+<ul>
+<li>
+<p><strong><code>Break</code>：立即终止循环</strong> <code>Break</code> 语句会立即完全地跳出它所在的循环（<code>For</code>, <code>While</code>, <code>ForEach-Object</code>, <code>Switch</code> 等）。</p>
+<p><strong>示例：在数组中找到第一个匹配项后就停止</strong></p>
+<pre><code class="language-powershell">$users = "Alice", "Bob", "Charlie", "David"
+foreach ($user in $users) {
+    Write-Host "正在检查用户: $user"
+    if ($user -eq "Charlie") {
+        Write-Host "已找到目标用户 Charlie！"
+        break # 立即跳出 foreach 循环
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong><code>Continue</code>：跳过本次，继续下次</strong> <code>Continue</code> 语句会立即停止当前这次循环的执行，并直接跳转到下一次循环的开始。</p>
+<p><strong>示例：只处理数组中的特定用户</strong></p>
+<pre><code class="language-powershell">$users = "Alice", "Bob", "Charlie_admin", "David"
+foreach ($user in $users) {
+    if ($user -like "*_admin") {
+        Write-Host "跳过管理员用户: $user"
+        continue # 跳过本次循环的剩余部分，直接检查下一个用户
+    }
+ 
+    # 这部分代码只有在用户不是管理员时才会执行
+    Write-Host "正在为普通用户 $user 分配资源..."
+}
+</code></pre>
+</li>
+</ul>
+<hr>
+<p>恭喜！至此，我们已经全面掌握了 PowerShell 的三大语法基石。我们学会了用<strong>变量</strong>存储数据，用<strong>运算符</strong>处理数据，用<strong>流程控制</strong>来指挥数据。你现在所拥有的，已经不仅仅是执行命令的能力，而是真正意义上“编写程序”的能力。你已经可以构建出能够适应变化、处理批量任务、具备初步智能的自动化脚本了。</p>
+<p>从下一章开始，我们将带着这些强大的“内功”，重返“招式”的修炼，学习更高级的 Cmdlet 运用和数据处理技巧，将我们的脚本打磨得更加专业和强大。</p>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="02第二章日常操作速成-让PowerShell成为你的高效助手.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="04第四章命令的艺术-深入Cmdlet与管道.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="02第二章日常操作速成-让PowerShell成为你的高效助手.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="04第四章命令的艺术-深入Cmdlet与管道.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

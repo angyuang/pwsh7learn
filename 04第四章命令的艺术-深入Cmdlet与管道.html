@@ -1,0 +1,594 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第四章命令的艺术-深入Cmdlet与管道 - PowerShell7从入门到精通</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-49765cd5.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-d1081bac.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">PowerShell7从入门到精通</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h3 id="第四章命令的艺术深入-cmdlet-与管道"><a class="header" href="#第四章命令的艺术深入-cmdlet-与管道"><strong>第四章：命令的艺术——深入 Cmdlet 与管道</strong></a></h3>
+<p>欢迎来到命令的殿堂。在这里，我们将超越“知道命令是做什么的”这一层面，深入探索“如何将命令用得更好”。本章聚焦于 PowerShell 的两大核心——Cmdlet 和管道，我们将学习如何通过精巧的参数运用、灵活的格式化技巧以及对管道机制的深度理解，将简单命令组合成强大、优雅且高效的工具链。</p>
+<p>学完本章，你将能够编写出更专业、更具可读性且功能更强大的脚本。你对命令的理解，将从一个执行者，升华为一个指挥若定的艺术家。</p>
+<hr>
+<h4 id="41-参数的精妙运用"><a class="header" href="#41-参数的精妙运用"><strong>4.1. 参数的精妙运用</strong></a></h4>
+<p>参数（Parameters）是我们与 Cmdlet 对话的“词汇”。它们告诉 Cmdlet 我们具体想要做什么——要操作哪个文件、要连接哪台服务器、是否要递归、要以何种方式执行。一个 Cmdlet 的强大与灵活，很大程度上就体现在其参数的设计上。精通参数的运用，是提升命令行效率和脚本质量的第一步。</p>
+<h5 id="411-位置参数-vs-命名参数对话的两种方式"><a class="header" href="#411-位置参数-vs-命名参数对话的两种方式"><strong>4.1.1. 位置参数 vs 命名参数：对话的两种方式</strong></a></h5>
+<p>向 Cmdlet 传递信息，主要有两种方式：明确“指名道姓”的命名参数，和依靠“心照不宣”的位置参数。</p>
+<ul>
+<li>
+<p><strong>命名参数 (Named Parameters)</strong></p>
+<p>这是最清晰、最推荐的参数使用方式。你需要明确地写出参数的名称（以连字符 <code>-</code> 开头），然后跟上它的值。</p>
+<pre><code class="language-powershell">Copy-Item -Path "C:\source\file.txt" -Destination "D:\backup\"
+</code></pre>
+<p><strong>优点：</strong></p>
+<ul>
+<li>
+<p><strong>可读性极高</strong>：任何人读到这行代码，都能立刻明白 <code>"C:\source\file.txt"</code> 是源路径，而 <code>"D:\backup\"</code> 是目标路径。代码即文档。</p>
+</li>
+<li>
+<p><strong>顺序无关</strong>：由于每个值都有其对应的“标签”，所以参数的顺序可以任意调换，结果完全相同。</p>
+<pre><code class="language-powershell"># 下面这行代码与上一行效果完全一样
+Copy-Item -Destination "D:\backup\" -Path "C:\source\file.txt"
+
+</code></pre>
+</li>
+</ul>
+<p>在编写脚本时，<strong>应始终优先使用命名参数</strong>，因为它能极大地提升代码的清晰度和可维护性。</p>
+</li>
+<li>
+<p><strong>位置参数 (Positional Parameters)</strong></p>
+<p>为了在交互式使用时提高效率，许多 Cmdlet 的常用参数被设计成了“位置参数”。这意味着你无需写出参数名，PowerShell 会根据你提供的值的<strong>位置顺序</strong>，自动将其赋给预先定义好的参数。</p>
+<p>我们可以通过 <code>Get-Help</code> 来查看一个命令的位置参数定义。例如：</p>
+<pre><code class="language-powershell">Get-Help Copy-Item -Full
+</code></pre>
+<p>在 <code>-Path</code> 和 <code>-Destination</code> 参数的描述中，你会看到 <code>Position? 0</code> 和 <code>Position? 1</code> 这样的字样。这表示 <code>-Path</code> 是第 0 个位置参数（也就是第一个），<code>-Destination</code> 是第 1 个位置参数（也就是第二个）。</p>
+<p>因此，上面的 <code>Copy-Item</code> 命令可以简写为：</p>
+<pre><code class="language-powershell">Copy-Item "C:\source\file.txt" "D:\backup\"
+</code></pre>
+<p>PowerShell 看到第一个值 <code>"C:\source\file.txt"</code>，知道它应该赋给位置 <code>0</code> 的 <code>-Path</code> 参数；看到第二个值 <code>"D:\backup\"</code>，知道它应该赋给位置 <code>1</code> 的 <code>-Destination</code> 参数。</p>
+<p><strong>使用场景：</strong>  位置参数非常适合在命令行中进行快速、临时的操作。但如前所述，在需要保存和维护的脚本中，为了清晰起见，请使用命名参数。</p>
+</li>
+</ul>
+<h5 id="412-开关参数简洁的布尔开关"><a class="header" href="#412-开关参数简洁的布尔开关"><strong>4.1.2. 开关参数：简洁的布尔开关</strong></a></h5>
+<p><strong>开关参数 (Switch Parameters)</strong> 是一种特殊的参数，它不需要值，它的出现与否本身就代表了一个布尔（<code>$true</code> 或 <code>$false</code>）的意义。当它<strong>出现</strong>时，其值为 <code>$true</code>；当它<strong>缺席</strong>时，其值为 <code>$false</code>。</p>
+<p>这使得开关参数成为控制命令行为的、非常简洁的“开关”。</p>
+<ul>
+<li>
+<p><strong>示例：<code>-Recurse</code> 和 <code>-Force</code></strong></p>
+<p>我们之前用过的 <code>Get-ChildItem</code> 的 <code>-Recurse</code> 参数就是一个典型的开关参数。</p>
+<pre><code class="language-powershell"># 不带 -Recurse，只查找当前目录
+Get-ChildItem
+ 
+# 带上 -Recurse，开关被“打开”，行为变为递归查找
+Get-ChildItem -Recurse
+</code></pre>
+<p>同样，<code>Remove-Item</code> 的 <code>-Force</code> 参数也是一个开关，用于强制删除只读文件等受保护的项目。</p>
+</li>
+<li>
+<p><strong>在脚本中明确指定值</strong></p>
+<p>虽然开关参数通常不带值，但在某些脚本编程的场景下，你可能需要根据一个变量来决定是否启用这个开关。这时，你可以用冒号 <code>:</code> 给它显式地赋一个布尔值。</p>
+<pre><code class="language-powershell">$isRecursive = $true
+# ... 后面可能有一些逻辑会改变 $isRecursive 的值 ...
+ 
+# 根据变量 $isRecursive 的值来决定是否启用 -Recurse 开关
+Get-ChildItem -Path "C:\Logs" -Recurse:$isRecursive
+</code></pre>
+<p>这种语法在编写更动态、更灵活的函数时非常有用。</p>
+</li>
+</ul>
+<h5 id="413-通用参数每个-cmdlet-的标准配置"><a class="header" href="#413-通用参数每个-cmdlet-的标准配置"><strong>4.1.3. 通用参数：每个 Cmdlet 的“标准配置”</strong></a></h5>
+<p>PowerShell 提供了一组“通用参数”（Common Parameters），它们可以用于<strong>任何一个 Cmdlet</strong>，因为它们是由 PowerShell 引擎自身处理的，而非由 Cmdlet 的开发者实现。这些参数为我们提供了一套控制命令执行、调试和错误处理的标准化工具。</p>
+<p>以下是几个最常用、最重要的通用参数：</p>
+<ul>
+<li>
+<p><strong><code>-Verbose</code>：显示详细的执行过程</strong></p>
+<p>当你想知道一个命令在“幕后”都做了些什么时，<code>-Verbose</code> 是你的好朋友。Cmdlet 的开发者可以在代码中埋入一些 <code>Write-Verbose</code> 信息，这些信息只有在用户指定了 <code>-Verbose</code> 参数时才会显示出来。</p>
+<pre><code class="language-powershell"># 尝试移动一个文件，并查看详细过程
+Move-Item -Path ".\file.txt" -Destination ".\archive\" -Verbose
+# 输出可能包含：VERBOSE: Performing the operation "Move File" on target "Item: C:\temp\file.txt Destination: C:\temp\archive\file.txt".
+</code></pre>
+</li>
+<li>
+<p><strong><code>-Debug</code>：为开发者准备的调试利器</strong></p>
+<p><code>-Debug</code> 比 <code>-Verbose</code> 更进一步。它用于显示更深层次的、主要面向开发者的调试信息（通过 <code>Write-Debug</code> 输出）。更重要的是，当脚本遇到 <code>Write-Debug</code> 时，它会暂停执行，并询问你希望如何操作（继续、停止、进入调试器等），这为脚本调试提供了极大的便利。</p>
+</li>
+<li>
+<p><strong><code>-ErrorAction</code>：精细控制错误处理行为</strong></p>
+<p>默认情况下，当 Cmdlet 遇到非终止性错误时（例如 <code>Get-ChildItem</code> 找不到指定路径），它会输出一条错误信息，然后继续执行脚本。<code>-ErrorAction</code> 参数可以改变这一默认行为。</p>
+<p>它有几个常用的值：</p>
+<ul>
+<li><code>SilentlyContinue</code>：别烦我。不显示错误信息，并继续执行。</li>
+<li><code>Continue</code>：默认行为。显示错误信息，并继续执行。</li>
+<li><code>Stop</code>：零容忍。将这个非终止性错误提升为终止性错误，立即停止脚本的执行。这在 <code>Try...Catch</code> 错误处理块中至关重要。</li>
+<li><code>Inquire</code>：问问我。暂停执行，并询问用户该如何继续。</li>
+</ul>
+<pre><code class="language-powershell"># 尝试获取一个不存在的路径，但我们不希望看到红色的错误信息
+Get-ChildItem -Path "C:\IDoNotExist" -ErrorAction SilentlyContinue
+ 
+# 在一个健壮的脚本中，我们希望任何错误都立即停止脚本，以便被 Try...Catch 捕获
+try {
+    Get-Content -Path "C:\config.ini" -ErrorAction Stop
+}
+catch {
+    Write-Warning "无法读取配置文件！脚本终止。"
+}
+</code></pre>
+</li>
+<li>
+<p><strong><code>-WhatIf</code> 和 <code>-Confirm</code>：安全操作的双保险</strong></p>
+<p>我们在前面已经介绍过这两个“安全阀”。<code>-WhatIf</code> 用于预演，<code>-Confirm</code> 用于逐一确认。它们也是通用参数，理论上可用于任何对系统有修改操作的 Cmdlet。一个设计良好的 Cmdlet 应该都支持它们。</p>
+</li>
+</ul>
+<hr>
+<p>通过对参数的精妙运用，我们得以更精确、更安全、更高效地与命令进行交互。理解命名与位置参数的区别，善用开关参数的简洁，并掌握通用参数这一强大的“标准配置”，将使你的 PowerShell 技能发生质的飞跃。接下来，我们将把目光投向命令的输出——如何让数据的呈现也成为一门艺术。</p>
+<hr>
+<h4 id="42-格式化与导出数据的呈现与归宿"><a class="header" href="#42-格式化与导出数据的呈现与归宿"><strong>4.2. 格式化与导出：数据的呈现与归宿</strong></a></h4>
+<p>PowerShell 命令返回的是富含信息的结构化对象，但直接将原始对象抛给用户并非总是最佳选择。我们需要根据不同的需求，将这些数据塑造成易于阅读的表格、清晰的列表，或者持久化的文件格式。PowerShell 提供了一系列强大的 <code>Format-*</code> 和 <code>Export-*</code>/<code>ConvertTo-*</code> Cmdlet，让我们可以随心所欲地控制数据的最终形态和归宿。</p>
+<h5 id="421-美化你的输出format-table-format-list-format-wide"><a class="header" href="#421-美化你的输出format-table-format-list-format-wide"><strong>4.2.1. 美化你的输出：<code>Format-Table</code>, <code>Format-List</code>, <code>Format-Wide</code></strong></a></h5>
+<p><code>Format-*</code> 系列 Cmdlet 专门负责将对象数据转换成特定格式的<strong>文本</strong>，用于在控制台中显示。它们是数据呈现的“美颜相机”。</p>
+<p><strong>一个至关重要的原则</strong>：<code>Format-*</code> Cmdlet 应当是管道的<strong>最后一站</strong>。因为它们输出的是用于显示的格式化文本，而不是可供后续命令处理的活对象。一旦数据经过了 <code>Format-*</code>，它就失去了其对象结构，后续的 <code>Sort-Object</code>、<code>Where-Object</code> 等命令将无法正常工作。</p>
+<ul>
+<li>
+<p><strong><code>Format-Table</code> (别名: <code>ft</code>)：整齐的表格</strong></p>
+<p>这是最常用的格式化命令，PowerShell 在很多时候也会默认使用它。它将对象的属性以列的形式，整齐地排列成一个表格。</p>
+<pre><code class="language-powershell"># 获取前 5 个进程，并以表格形式显示
+Get-Process | Select-Object -First 5 | Format-Table
+</code></pre>
+<p><strong>常用参数：</strong></p>
+<ul>
+<li><code>-Property</code>：指定要显示哪些属性（列）。</li>
+<li><code>-AutoSize</code>：自动调整列宽以适应内容，让表格更紧凑美观。</li>
+<li><code>-Wrap</code>：当内容过长时，自动换行而不是截断。</li>
+<li><code>-GroupBy</code>：根据指定的属性对结果进行分组显示。</li>
+</ul>
+<pre><code class="language-powershell"># 只显示进程名、ID 和内存使用，并自动调整列宽
+Get-Process | Format-Table -Property ProcessName, Id, WorkingSet64 -AutoSize
+ 
+# 按公司对服务进行分组显示
+Get-Service | Sort-Object -Property Company | Format-Table -Property Name, Status, Company -GroupBy Company -AutoSize
+</code></pre>
+</li>
+<li>
+<p><strong><code>Format-List</code> (别名: <code>fl</code>)：清晰的属性列表</strong></p>
+<p>当一个对象含有的属性非常多，无法在表格中完整展示时，<code>Format-List</code> 是最佳选择。它将每个对象显示为一个列表，每个属性占一行。</p>
+<pre><code class="language-powershell"># 查看 "Winlogon" 进程的所有属性
+Get-Process -Name "winlogon" | Format-List -Property *
+</code></pre>
+<p><code>*</code> 是一个通配符，表示“所有属性”。这对于深入探查一个对象的全部细节非常有用。</p>
+</li>
+<li>
+<p><strong><code>Format-Wide</code> (别名: <code>fw</code>)：简洁的多列视图</strong></p>
+<p>如果你只关心一个对象的单个属性（通常是名称），并且希望尽可能紧凑地显示大量结果，<code>Format-Wide</code> 会将它们排列成一个多列的列表。</p>
+<pre><code class="language-powershell"># 以多列形式，紧凑地显示所有服务的名称
+Get-Service | Format-Wide -Property Name
+</code></pre>
+</li>
+</ul>
+<h5 id="422-创建自定义视图使用计算属性"><a class="header" href="#422-创建自定义视图使用计算属性"><strong>4.2.2. 创建自定义视图：使用计算属性</strong></a></h5>
+<p>在格式化输出时，我们有时需要的列并不直接对应对象的某个现有属性。比如，我们想显示以兆字节（MB）为单位的内存使用，而不是默认的字节（Bytes）。这时，**计算属性（Calculated Properties）**就派上了用场。</p>
+<p>计算属性允许我们动态地创建一个“虚拟”的属性。它通过一个哈希表来定义，该哈希表包含两个键：</p>
+<ul>
+<li><code>Name</code> (或 <code>Label</code>, <code>n</code>)：新属性的名称（即列名）。</li>
+<li><code>Expression</code> (或 <code>e</code>)：一个脚本块 <code>{...}</code>，用于计算新属性的值。在脚本块中，<code>$_</code> 代表当前正在处理的对象。</li>
+</ul>
+<p><strong>示例：以 MB 为单位显示进程内存</strong></p>
+<pre><code class="language-powershell">Get-Process | Format-Table -Property ProcessName, Id, @{ Name="Memory(MB)"; Expression={ $_.WorkingSet64 / 1MB } } -AutoSize
+</code></pre>
+<p>在这个例子中，我们创建了一个名为 “Memory(MB)” 的新列，它的值是通过将原始的 <code>WorkingSet64</code> 属性值除以 <code>1MB</code>（PowerShell 内置的常量）计算得来的。</p>
+<p>计算属性是一个极其强大的特性，它不仅可以用于 <code>Format-*</code> 命令，也可以用于 <code>Select-Object</code> 和 <code>Sort-Object</code>，极大地增强了我们处理和呈现数据的灵活性。</p>
+<h5 id="423-数据导出让信息走出控制台"><a class="header" href="#423-数据导出让信息走出控制台"><strong>4.2.3. 数据导出：让信息走出控制台</strong></a></h5>
+<p>格式化只是为了“看”，而很多时候我们需要将结果“保存”下来，以便于报告、存档或与其他程序交换数据。这时，就需要 <code>Export-*</code> 和 <code>ConvertTo-*</code> 系列的 Cmdlet。</p>
+<ul>
+<li>
+<p><strong><code>Export-Csv</code>：导出为 CSV 文件</strong></p>
+<p>CSV (逗号分隔值) 是一种通用的、与 Excel 等电子表格软件高度兼容的格式。<code>Export-Csv</code> 可以将对象集合直接转换成一个标准的 CSV 文件，每个对象的属性成为一列。</p>
+<pre><code class="language-powershell"># 获取所有服务的信息，并将其导出为一个 CSV 文件
+Get-Service | Export-Csv -Path "C:\temp\services.csv" -NoTypeInformation
+</code></pre>
+<p><code>-NoTypeInformation</code> 是一个常用的参数，它能防止 PowerShell 在 CSV 文件的第一行添加 <code>#TYPE</code> 信息，使文件更“干净”，与其他程序的兼容性更好。</p>
+</li>
+<li>
+<p><strong><code>ConvertTo-Json</code>：转换为 JSON 格式</strong></p>
+<p>JSON (JavaScript Object Notation) 是现代 Web API 和应用程序中最流行的数据交换格式。<code>ConvertTo-Json</code> 将 PowerShell 对象或对象集合转换成一个 JSON 格式的<strong>字符串</strong>。</p>
+<pre><code class="language-powershell"># 获取单个进程对象，并将其转换为 JSON 字符串
+$processJson = Get-Process -Id $pid | Select-Object -Property ProcessName, Id, StartTime | ConvertTo-Json
+ 
+# 将 JSON 字符串保存到文件
+$processJson | Out-File -FilePath "C:\temp\process.json"
+</code></pre>
+</li>
+<li>
+<p><strong><code>ConvertTo-Html</code>：生成 HTML 报告</strong></p>
+<p>需要快速生成一个可以在浏览器中查看的报告？<code>ConvertTo-Html</code> 可以将对象集合转换成一个 HTML 表格。</p>
+<pre><code class="language-powershell"># 获取磁盘信息，生成一个 HTML 报告，并直接在浏览器中打开
+Get-Disk | ConvertTo-Html -Property Number, FriendlyName, Size, HealthStatus | Out-File -FilePath "C:\temp\disk_report.html"
+Invoke-Item "C:\temp\disk_report.html"
+</code></pre>
+</li>
+</ul>
+<p><strong><code>Export-*</code> vs <code>ConvertTo-*</code> 的区别：</strong></p>
+<ul>
+<li><code>Export-*</code> (如 <code>Export-Csv</code>) 直接将对象写入<strong>文件</strong>。</li>
+<li><code>ConvertTo-*</code> (如 <code>ConvertTo-Json</code>) 则是将对象转换成特定格式的<strong>字符串</strong>并留在内存中（或通过管道输出），让你可以对其进行进一步处理，然后再决定如何保存。</li>
+</ul>
+<hr>
+<p>通过本节的学习，我们掌握了美化、定制和固化 PowerShell 输出的各种方法。无论是为了在控制台获得最佳的可读性，还是为了生成标准格式的数据文件，这套工具都为我们提供了极大的灵活性。现在，我们的命令不仅执行得精准，其结果的呈现与归宿也同样专业。接下来，我们将深入管道的内部，揭示其更高级的运作智慧。</p>
+<hr>
+<h4 id="43-管道的高级智慧解构数据流的内在机制"><a class="header" href="#43-管道的高级智慧解构数据流的内在机制"><strong>4.3. 管道的高级智慧：解构数据流的内在机制</strong></a></h4>
+<p>在 PowerShell 的世界中，管道（<code>|</code>）不仅是连接命令的“胶水”，它更是一条智能的、自动化的数据装配线。要从“使用”管道升级为“精通”管道，我们必须深入其内部，理解其精密的设计哲学。本节将解构管道参数绑定的完整过程，并深度剖析“管道三剑客”——<code>Where-Object</code>, <code>Select-Object</code>, <code>Sort-Object</code>——的高级用法与性能考量，让你真正驾驭数据流。</p>
+<h5 id="431-管道参数绑定命令间的隐式契约"><a class="header" href="#431-管道参数绑定命令间的隐式契约"><strong>4.3.1. 管道参数绑定：命令间的隐式契约</strong></a></h5>
+<p>当一个对象通过管道流向下一个 Cmdlet 时，PowerShell 引擎会扮演一个积极的“媒人”，尝试将这个流入的对象（或其属性）与接收方 Cmdlet 的某个参数进行“配对”。这个过程被称为<strong>管道参数绑定（Pipeline Parameter Binding）</strong>，它遵循一套严格且有序的规则。</p>
+<p><strong>参数绑定过程的完整解析：</strong></p>
+<p>PowerShell 引擎对<strong>每一个</strong>从管道流入的对象，都会按以下顺序尝试绑定：</p>
+<ol>
+<li>
+<p><strong>按值绑定 (ByValue)</strong></p>
+<ul>
+<li><strong>机制</strong>：引擎检查输入对象的<strong>类型</strong>是否与接收方 Cmdlet 某个参数所期望的类型<strong>完全匹配</strong>或<strong>兼容</strong>（例如，输入的是子类，参数期望的是父类）。该参数还必须在其定义中声明了 <code>ValueFromPipeline = $true</code>。</li>
+<li><strong>特点</strong>：这是最高效、最优先的绑定方式。它将整个对象直接“灌入”参数中。一旦绑定成功，该对象就不会再参与后续的属性名绑定。</li>
+<li><strong>诊断</strong>：使用 <code>Get-Help</code> 查看参数详情，<code>Accept pipeline input? True (ByValue)</code> 是其明确标识。</li>
+<li><strong>经典案例：<code>Get-Process | Stop-Process</code></strong> <code>Get-Process</code> 输出 <code>System.Diagnostics.Process</code> 类型的对象。<code>Stop-Process</code> 的 <code>-InputObject</code> 参数恰好被设计为通过 <code>ByValue</code> 接收此类型的对象。因此，整个进程对象被直接传递，<code>Stop-Process</code> 获得了操作所需的一切信息。</li>
+</ul>
+</li>
+<li>
+<p><strong>按属性名绑定 (ByPropertyName)</strong></p>
+<ul>
+<li><strong>机制</strong>：如果在按值绑定失败后，引擎会进入此阶段。它会检查输入对象的<strong>所有属性名</strong>，看是否有某个属性名与接收方 Cmdlet 的某个参数<strong>名称或其别名</strong>相匹配。该参数必须在其定义中声明了 <code>ValueFromPipelineByPropertyName = $true</code>。</li>
+<li><strong>特点</strong>：这种方式非常灵活，允许一个输入对象同时为接收方的<strong>多个参数</strong>提供数据。只要属性名和参数名匹配，就会发生绑定。</li>
+<li><strong>诊断</strong>：<code>Get-Help</code> 的参数描述中会显示 <code>Accept pipeline input? True (ByPropertyName)</code>。</li>
+<li><strong>案例：导入 CSV 数据创建用户</strong> 假设我们有一个 <code>users.csv</code> 文件，包含 <code>UserName</code> 和 <code>Department</code> 两列。
+<pre><code class="language-powershell"># users.csv 内容:
+# "UserName","Department"
+# "alice","Sales"
+# "bob","IT"
+ 
+# 假设我们有一个 New-ADUser 的代理函数，其参数也叫 -UserName 和 -Department
+Import-Csv -Path .\users.csv | New-ADUserProxy 
+
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>绑定的优先级与陷阱：</strong></p>
+<ul>
+<li><strong>ByValue 优先</strong>：PowerShell <strong>总是</strong>先尝试 <code>ByValue</code>。如果一个对象可以通过 <code>ByValue</code> 绑定到一个名为 <code>-InputObject</code> 的参数，即使它同时拥有一个名为 <code>Path</code> 的属性，并且接收方也有一个支持 <code>ByPropertyName</code> 的 <code>-Path</code> 参数，后者也<strong>不会</strong>发生绑定。</li>
+<li><strong>类型转换</strong>：在绑定过程中，PowerShell 会尝试进行类型转换。例如，如果输入对象的属性值是字符串 <code>"123"</code>，而接收参数期望的是 <code>[int]</code> 类型，转换会自动发生。如果转换失败，则绑定失败。</li>
+</ul>
+<h5 id="432-高效过滤where-object-的深度剖析-别名-"><a class="header" href="#432-高效过滤where-object-的深度剖析-别名-"><strong>4.3.2. 高效过滤：<code>Where-Object</code> 的深度剖析 (别名: <code>?</code>)</strong></a></h5>
+<p><code>Where-Object</code> 是管道中至关重要的“质检员”。它的核心是 <code>-FilterScript</code> 参数，一个决定对象“去”或“留”的脚本块。</p>
+<ul>
+<li>
+<p><strong>基本语法与 <code>$_</code></strong> 在脚本块 <code>{...}</code> 中，自动变量 <code>$_</code> (或 <code>$PSItem</code>) 代表管道中当前流经的对象。脚本块的最终输出必须是一个布尔值（或可以被隐式转换为布尔值），<code>$true</code> 表示通过，<code>$false</code> 表示过滤。</p>
+<pre><code class="language-powershell"># 筛选出句柄数超过 1000 的进程
+Get-Process | Where-Object { $_.Handles -gt 1000 }
+</code></pre>
+</li>
+<li>
+<p><strong>性能优化：<code>Where()</code> 方法 vs <code>Where-Object</code> Cmdlet</strong> 从 PowerShell v4 开始，数组等集合类型自身也拥有了一个 <code>Where()</code> 方法，其性能通常优于 <code>Where-Object</code> Cmdlet，因为它是在 PowerShell 引擎内部直接执行，减少了 Cmdlet 调用的开销。</p>
+<ul>
+<li><strong>Cmdlet 方式</strong>：<code>Get-Process | Where-Object { $_.Handles -gt 1000 }</code></li>
+<li><strong>方法方式</strong>：<code>(Get-Process).Where({ $_.Handles -gt 1000 })</code></li>
+</ul>
+<p><strong>何时选择？</strong></p>
+<ul>
+<li>对于<strong>已完全加载到内存中</strong>的集合（如 <code>(Get-Process)</code> 的结果），使用 <code>Where()</code> 方法更快。</li>
+<li>当处理<strong>巨大的、无法一次性载入内存的数据流</strong>（例如，逐行读取一个几十GB的日志文件）时，必须使用 <code>Where-Object</code> Cmdlet，因为它支持<strong>流式处理</strong>，来一个处理一个，内存占用极低。</li>
+</ul>
+</li>
+<li>
+<p><strong>简化语法 (Split/Binary 模式)</strong> <code>Where()</code> 方法还支持一种更简洁的“分离”模式语法，进一步提升可读性。</p>
+<pre><code class="language-powershell"># 语法: .Where(&lt;属性&gt;, &lt;比较运算符&gt;, &lt;值&gt;)
+(Get-Process).Where('Handles', 'gt', 1000)
+</code></pre>
+<p>这种语法虽然简洁，但不如脚本块灵活，无法处理 <code>-and</code>/<code>-or</code> 等复杂逻辑。</p>
+</li>
+</ul>
+<h5 id="433-精准重塑与排序select-object-和-sort-object-的高级技巧"><a class="header" href="#433-精准重塑与排序select-object-和-sort-object-的高级技巧"><strong>4.3.3. 精准重塑与排序：<code>Select-Object</code> 和 <code>Sort-Object</code> 的高级技巧</strong></a></h5>
+<ul>
+<li>
+<p><strong><code>Select-Object</code> (别名: <code>select</code>)：数据流的雕刻刀</strong> <code>Select-Object</code> 不仅仅是挑选属性，它更是一个强大的对象重塑工具。</p>
+<ul>
+<li>
+<p><strong>创建新对象</strong>：<code>Select-Object</code> 的核心价值在于它会创建一个<strong>新的自定义对象 (<code>[PSCustomObject]</code>)</strong>。这意味着你可以彻底改变对象的结构，同时保持其对象特性，以便在管道中继续传递。</p>
+</li>
+<li>
+<p><strong>计算属性的威力</strong>：我们已经了解了计算属性的基本用法 <code>@{N='...'; E={...}}</code>。它可以用来：</p>
+<ul>
+<li><strong>数据转换</strong>：如将字节转换为MB/GB。</li>
+<li><strong>数据合并</strong>：<code>@{N='FullName'; E={ "$($_.FirstName) $($_.LastName)" }}</code></li>
+<li><strong>执行方法</strong>：<code>@{N='IsResponding'; E={ $_.Responding }}</code></li>
+<li><strong>嵌套查询</strong>：<code>@{N='Owner'; E={ (Get-CimInstance Win32_Process -Filter "ProcessId = $($_.Id)").GetOwner().User }}</code> (这是一个耗性能的例子，仅作演示)</li>
+</ul>
+</li>
+<li>
+<p><strong><code>-ExpandProperty</code> 参数</strong>：当某个属性本身就是一个集合时，如果你想展开这个集合，让其内部的每个元素成为管道中的独立对象，就需要使用 <code>-ExpandProperty</code>。</p>
+<pre><code class="language-powershell"># 假设 Get-VM 返回的对象有一个 NetworkAdapters 属性，它是一个网卡对象的数组
+# 我们想单独处理每个网卡
+Get-VM -Name "MyVM" | Select-Object -ExpandProperty NetworkAdapters
+
+</code></pre>
+</li>
+<li>
+<p><strong><code>-Unique</code> 参数</strong>：用于获取唯一的对象或属性值。</p>
+<pre><code class="language-powershell"># 获取所有进程的可执行文件路径，并去除重复项
+Get-Process | Select-Object -Property Path -Unique
+
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>Sort-Object</code> (别名: <code>sort</code>)：数据流的定序器</strong> <code>Sort-Object</code> 在接收到所有输入后，才会进行排序并输出，因此它是一个**阻塞型（Blocking）**的 Cmdlet。</p>
+<ul>
+<li>
+<p><strong>性能考量</strong>：对大数据集进行排序会消耗大量内存和时间。因此，<strong>务必先过滤（<code>Where-Object</code>），再排序（<code>Sort-Object</code>）</strong>，尽可能减小需要排序的数据量。</p>
+<pre><code class="language-powershell"># 高效：先过滤，只对符合条件的少量进程排序
+Get-Process | Where-Object { $_.Company -eq "Microsoft Corporation" } | Sort-Object -Property WorkingSet
+ 
+# 低效：先对所有进程排序，再过滤，浪费了大量排序资源
+Get-Process | Sort-Object -Property WorkingSet | Where-Object { $_.Company -eq "Microsoft Corporation" }
+
+</code></pre>
+</li>
+<li>
+<p><strong>按计算属性排序</strong>：<code>Sort-Object</code> 同样可以按一个动态计算出的属性进行排序。</p>
+<pre><code class="language-powershell"># 按文件名的数字部分进行排序
+Get-ChildItem -Filter "log*.txt" | Sort-Object -Property { [int]($_.BaseName -replace 'log', '') }
+
+</code></pre>
+</li>
+<li>
+<p><strong><code>-Top</code> 和 <code>-Bottom</code> (PowerShell Core 7.1+)</strong>：这是对 <code>Sort-Object | Select-Object -First/-Last</code> 的性能优化，可以在排序过程中就只保留顶部或底部的 N 个项目，极大地节省内存。</p>
+<pre><code class="language-powershell"># 在 PowerShell 7.1+ 中，这是获取内存占用最高的前10个进程的最高效方式
+Get-Process | Sort-Object -Property WorkingSet -Descending -Top 10
+
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>通过对管道机制的深度解构，我们现在能够以一种全新的、更底层的视角来审视命令的协作。理解参数绑定的优先级，让我们能预测和设计出更可靠的数据流；掌握 <code>Where-Object</code> 的不同实现方式，让我们能在性能与便利性之间做出权衡；而 <code>Select-Object</code> 和 <code>Sort-Object</code> 的高级技巧，则为我们提供了雕琢和整理数据的终极能力。这不仅仅是技术的堆砌，这是一种将复杂问题分解为一系列优雅、高效的流式操作的思维艺术。</p>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="03第三章语法基石-构建你自己的命令.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="05第五章脚本编程-从命令到自动化方案.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="03第三章语法基石-构建你自己的命令.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="05第五章脚本编程-从命令到自动化方案.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

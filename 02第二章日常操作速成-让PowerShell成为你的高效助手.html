@@ -1,0 +1,632 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第二章日常操作速成-让PowerShell成为你的高效助手 - PowerShell7从入门到精通</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-49765cd5.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-d1081bac.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">PowerShell7从入门到精通</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h3 id="第二章日常操作速成让-powershell-成为你的高效助手"><a class="header" href="#第二章日常操作速成让-powershell-成为你的高效助手"><strong>第二章：日常操作速成——让 PowerShell 成为你的高效助手</strong></a></h3>
+<p>欢迎来到旅程的第二站。在第一章中，我们已经与 PowerShell 初次见面，理解了它的核心思想。现在，是时候将这些理念付诸实践，解决我们日常工作中那些最常见、最基础的任务了。</p>
+<p>本章的目标是让你“用起来，快起来”。我们将聚焦于文件系统的管理、系统信息的查询以及应用程序的控制。你将发现，许多过去需要通过鼠标多次点击才能完成的操作，如今只需一行简洁的命令即可实现。更重要的是，你将开始真正领会到 PowerShell “动词-名词”命名法的一致性之美，并初步接触到“管道”和“别名”这两个能让你效率倍增的强大武器。</p>
+<p>请将本章视为你的“PowerShell 日常生活指南”。学完本章，你将有足够的能力，将 PowerShell 无缝融入到你的每日工作流中，让它成为你名副其实的数字管家和高效助手。</p>
+<hr>
+<h4 id="21-文件与目录操作你的数字世界管家"><a class="header" href="#21-文件与目录操作你的数字世界管家"><strong>2.1. 文件与目录操作：你的数字世界管家</strong></a></h4>
+<p>计算机中最基本、最核心的元素莫过于文件和目录（文件夹）。它们是你所有数字资产的载体。因此，高效地管理它们，是掌握任何一个命令行环境的必修课。PowerShell 提供了一套设计优雅、功能强大且高度一致的 Cmdlet，让你能够像一位经验丰富的管家一样，精准、利落地整理你的数字家园。</p>
+<h5 id="211-查看与导航在文件系统的版图上自由穿梭"><a class="header" href="#211-查看与导航在文件系统的版图上自由穿梭"><strong>2.1.1. 查看与导航：在文件系统的版图上自由穿梭</strong></a></h5>
+<p>在开始任何操作之前，我们首先需要知道“我在哪里？”以及“如何去往别处？”。这就像在城市中漫步，你需要知道当前的街道名，并能够顺利走到下一个目的地。</p>
+<ul>
+<li>
+<p><strong>你在何处？—— <code>Get-Location</code></strong></p>
+<p>想知道当前所在的目录路径吗？<code>Get-Location</code> 命令会告诉你答案。</p>
+<pre><code class="language-powershell">Get-Location
+</code></pre>
+<p>执行后，它会返回一个包含当前路径信息的对象。在默认显示下，你将直接看到 <code>Path</code> 属性，也就是你熟悉的路径字符串，例如 <code>C:\Users\YourName</code> 或 <code>/home/yourname</code>。</p>
+<p><strong>小贴士：别名 <code>pwd</code></strong> 对于熟悉 Linux/macOS <code>pwd</code> (Print Working Directory) 命令的朋友，PowerShell 提供了一个完全相同的别名。输入 <code>pwd</code>，你会得到和 <code>Get-Location</code> 一样的结果。别名是命令的“小名”，我们稍后会深入探讨。</p>
+</li>
+<li>
+<p><strong>前往目的地 —— <code>Set-Location</code></strong></p>
+<p>知道了当前位置，下一步就是移动。<code>Set-Location</code> 负责改变你当前所在的目录。</p>
+<ul>
+<li>
+<p><strong>绝对路径</strong>：提供一个从根目录开始的完整路径。</p>
+<pre><code class="language-powershell">#Windows
+Set-Location -Path "C:\Windows\System32"
+ 
+#Linux/macOS
+Set-Location -Path "/var/log"
+
+</code></pre>
+</li>
+<li>
+<p><strong>相对路径</strong>：基于当前位置进行移动。</p>
+<ul>
+<li><code>.</code> (一个点) 代表当前目录。</li>
+<li><code>..</code> (两个点) 代表上一级（父）目录。</li>
+</ul>
+<pre><code class="language-powershell"># 进入当前目录下的 "Documents" 文件夹
+Set-Location -Path ".\Documents" 
+# 返回上一级目录Set-Location -Path ".."
+</code></pre>
+</li>
+</ul>
+<p><strong>小贴士：别名 <code>cd</code></strong> <code>Set-Location</code> 的功能与传统命令行中的 <code>cd</code> (Change Directory) 命令完全一致。为了方便老用户，PowerShell 同样内置了 <code>cd</code> 这个别名。因此，你可以更快捷地输入：</p>
+<pre><code class="language-powershell">cd C:\Users
+cd ..
+</code></pre>
+<p>这可能是你日常使用频率最高的命令之一。</p>
+</li>
+</ul>
+<h5 id="212-列出文件和目录get-childitem-的世界"><a class="header" href="#212-列出文件和目录get-childitem-的世界"><strong>2.1.2. 列出文件和目录：<code>Get-ChildItem</code> 的世界</strong></a></h5>
+<p>当你进入一个房间（目录），你自然想看看里面都有什么。<code>Get-ChildItem</code> 就是你的“透视眼镜”，用于列出指定位置下的所有子项（文件和目录）。</p>
+<ul>
+<li>
+<p><strong>基本用法</strong></p>
+<p>不带任何参数，它会列出当前目录下的所有内容。</p>
+<pre><code class="language-powershell">Get-ChildItem
+</code></pre>
+<p>你会看到一个类似文件资源管理器的列表，包含了模式（Mode）、最后写入时间（LastWriteTime）、大小（Length）和名称（Name）。</p>
+<p><strong>小贴士：别名 <code>ls</code> 和 <code>dir</code></strong> 为了照顾所有背景的用户，PowerShell 非常贴心地为 <code>Get-ChildItem</code> 提供了两个广为人知的别名：Linux/macOS 用户熟悉的 <code>ls</code> 和 Windows 用户熟悉的 <code>dir</code>。它们用起来完全一样：</p>
+<pre><code class="language-powershell">ls
+dir C:\
+</code></pre>
+</li>
+<li>
+<p><strong>高级用法：精准探索</strong></p>
+<p><code>Get-ChildItem</code> 的强大远不止于此，它丰富的参数让你可以进行精细的控制：</p>
+<ul>
+<li>
+<p><strong><code>-Path</code></strong>：指定要查看的路径，而非当前路径。</p>
+<pre><code class="language-powershell">Get-ChildItem -Path "C:\Program Files"
+
+</code></pre>
+</li>
+<li>
+<p><strong><code>-Recurse</code></strong>：进行递归查找，深入所有子目录，列出所有后代项。</p>
+<pre><code class="language-powershell"># 找出 C:\Windows 目录下及所有子目录下所有的 .log 文件
+Get-ChildItem -Path "C:\Windows" -Filter "*.log" -Recurse
+
+</code></pre>
+</li>
+<li>
+<p><strong><code>-Filter</code></strong>：使用提供程序支持的筛选器（通常更快），用于简单的模式匹配。</p>
+</li>
+<li>
+<p><strong><code>-Include</code> / <code>-Exclude</code></strong>：包含或排除符合特定模式的项，通常与 <code>-Recurse</code> 配合使用。</p>
+</li>
+<li>
+<p><strong><code>-File</code> / <code>-Directory</code></strong>：只显示文件或只显示目录（PowerShell 4.0+）。</p>
+<pre><code class="language-powershell"># 只看当前目录下的文件夹
+Get-ChildItem -Directory
+
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="213-创建新天地new-item-的创造之力"><a class="header" href="#213-创建新天地new-item-的创造之力"><strong>2.1.3. 创建新天地：<code>New-Item</code> 的创造之力</strong></a></h5>
+<p>探索完已有世界，我们来学习创造。<code>New-Item</code> 是一个通用的创建命令，可以用来创建文件、目录，甚至是注册表项。</p>
+<ul>
+<li>
+<p><strong>创建新目录</strong></p>
+<p>使用 <code>-ItemType Directory</code> 参数来指明你要创建的是一个目录。</p>
+<pre><code class="language-powershell"># 在当前位置创建一个名为 "MyScripts" 的新文件夹
+New-Item -Path ".\MyScripts" -ItemType Directory
+</code></pre>
+<p><strong>小贴士：别名 <code>mkdir</code></strong> 同样，为了方便，你可以使用大家熟悉的 <code>mkdir</code> 别名：</p>
+<pre><code class="language-powershell">mkdir MyProject
+</code></pre>
+</li>
+<li>
+<p><strong>创建空文件</strong></p>
+<p>使用 <code>-ItemType File</code> 参数。</p>
+<pre><code class="language-powershell"># 在 MyScripts 文件夹下创建一个名为 "FirstScript.ps1" 的空文件
+New-Item -Path ".\MyScripts\FirstScript.ps1" -ItemType File
+</code></pre>
+</li>
+</ul>
+<h5 id="214-复制与移动copy-item-和-move-item-的灵活运用"><a class="header" href="#214-复制与移动copy-item-和-move-item-的灵活运用"><strong>2.1.4. 复制与移动：<code>Copy-Item</code> 和 <code>Move-Item</code> 的灵活运用</strong></a></h5>
+<p>整理文件离不开复制和移动。PowerShell 为此提供了 <code>Copy-Item</code> 和 <code>Move-Item</code> 两个直观的 Cmdlet。</p>
+<ul>
+<li>
+<p><strong>复制文件或目录：<code>Copy-Item</code></strong></p>
+<pre><code class="language-powershell"># 将 FirstScript.ps1 复制到 "Backup" 目录
+Copy-Item -Path ".\MyScripts\FirstScript.ps1" -Destination ".\Backup"
+ 
+# 复制整个 MyScripts 目录及其内容到 Backup 目录
+Copy-Item -Path ".\MyScripts" -Destination ".\Backup" -Recurse
+</code></pre>
+<p><strong>小贴士：别名 <code>cp</code> 或 <code>copy</code></strong> 你可以使用 <code>cp</code> (源自 Linux) 或 <code>copy</code> (源自 CMD) 作为 <code>Copy-Item</code> 的别名。</p>
+</li>
+<li>
+<p><strong>移动或重命名：<code>Move-Item</code></strong></p>
+<p><code>Move-Item</code> 的用法与 <code>Copy-Item</code> 几乎完全相同，只是它执行的是“剪切-粘贴”操作。</p>
+<pre><code class="language-powershell"># 将 FirstScript.ps1 移动到 Archive 目录
+Move-Item -Path ".\MyScripts\FirstScript.ps1" -Destination ".\Archive"
+</code></pre>
+<p>一个有趣的用途是<strong>重命名</strong>。当 <code>-Destination</code> 是同一个目录下 的一个新名字时，<code>Move-Item</code> 的效果就是重命名。</p>
+<pre><code class="language-powershell"># 将 FirstScript.ps1 重命名为 MainScript.ps1
+Move-Item -Path ".\MyScripts\FirstScript.ps1" -Destination ".\MyScripts\MainScript.ps1"
+</code></pre>
+<p><strong>小贴士：别名 <code>mv</code> 或 <code>move</code></strong> <code>mv</code> (源自 Linux) 和 <code>move</code> (源自 CMD) 是 <code>Move-Item</code> 的常用别名。</p>
+</li>
+</ul>
+<h5 id="215-查看文件内容get-content-的目光"><a class="header" href="#215-查看文件内容get-content-的目光"><strong>2.1.5. 查看文件内容：<code>Get-Content</code> 的目光</strong></a></h5>
+<p>想快速查看一个文本文件的内容，而不想打开重量级的编辑器？<code>Get-Content</code> 为你效劳。</p>
+<pre><code class="language-powershell"># 查看 FirstScript.ps1 的内容
+Get-Content -Path ".\MyScripts\MainScript.ps1"
+ 
+# 查看文件的前 10 行
+Get-Content -Path "C:\Windows\System32\drivers\etc\hosts" -TotalCount 10
+</code></pre>
+<p><strong>小贴士：别名 <code>cat</code> 或 <code>type</code></strong> <code>cat</code> (源自 Linux) 和 <code>type</code> (源自 CMD) 都是 <code>Get-Content</code> 的便捷别名。</p>
+<h5 id="216-删除操作remove-item-的决断"><a class="header" href="#216-删除操作remove-item-的决断"><strong>2.1.6. 删除操作：<code>Remove-Item</code> 的决断</strong></a></h5>
+<p>整理的最后一步，往往是清理不再需要的东西。<code>Remove-Item</code> 负责执行删除操作。</p>
+<p><strong>请务必小心使用此命令！</strong></p>
+<pre><code class="language-powershell"># 删除一个文件
+Remove-Item -Path ".\MyScripts\MainScript.ps1"
+ 
+# 删除一个空目录
+Remove-Item -Path ".\MyScripts"
+ 
+# 删除一个非空目录及其所有内容（需要 -Recurse）
+Remove-Item -Path ".\Backup" -Recurse
+</code></pre>
+<ul>
+<li>
+<p><strong>安全第一：<code>-WhatIf</code> 和 <code>-Confirm</code></strong></p>
+<p>由于删除是危险操作，PowerShell 提供了两个非常有用的“通用参数”来防止意外：</p>
+<ul>
+<li>
+<p><strong><code>-WhatIf</code></strong>：模拟执行。它不会真的删除任何东西，而是告诉你“如果执行此命令，将会发生什么”。这是执行破坏性操作前极好的预览工具。</p>
+<pre><code class="language-powershell">Remove-Item -Path ".\Backup" -Recurse -WhatIf
+
+</code></pre>
+</li>
+<li>
+<p><strong><code>-Confirm</code></strong>：执行前提示。在删除每一个项目前，它都会停下来询问你是否确认。</p>
+<pre><code class="language-powershell">Remove-Item -Path ".\Backup" -Recurse -Confirm
+
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>小贴士：别名 <code>rm</code> 或 <code>del</code></strong> <code>rm</code> (源自 Linux) 和 <code>del</code> (源自 CMD) 是 <code>Remove-Item</code> 的别名。</p>
+<hr>
+<p>至此，你已经掌握了文件与目录管理的“六脉神剑”：<code>Get-Location</code>, <code>Set-Location</code>, <code>Get-ChildItem</code>, <code>New-Item</code>, <code>Copy-Item/Move-Item</code>, <code>Get-Content</code>, 和 <code>Remove-Item</code>。你会发现，它们都严格遵循着 <code>动词-名词</code> 的命名法，并且通过别名照顾了不同背景用户的使用习惯。</p>
+<p>花点时间在你的终端里练习这些命令吧。熟练地掌握它们，你就能在文件系统的世界里信步闲庭，游刃有余。接下来，我们将把目光从文件转向更宏观的系统层面。</p>
+<h4 id="22-系统与应用管理掌控你的计算机"><a class="header" href="#22-系统与应用管理掌控你的计算机"><strong>2.2. 系统与应用管理：掌控你的计算机</strong></a></h4>
+<p>如果说文件与目录管理是操作系统的“内政”，那么对系统本身状态的洞察和应用程序的控制，则更像是“运筹帷幄”。PowerShell 赋予了用户超越图形界面的能力，可以直接与系统的核心组件对话，查询硬件状态、启动应用、诊断网络，乃至控制计算机的电源。本节将引导读者掌握这些关键技能，将 PowerShell 的应用范围从文件管理扩展到更宏观的系统控制层面。</p>
+<h5 id="221-磁盘管理洞察存储全局"><a class="header" href="#221-磁盘管理洞察存储全局"><strong>2.2.1. 磁盘管理：洞察存储全局</strong></a></h5>
+<p>数据是数字世界的基石，而磁盘是承载数据的物理载体。清晰地了解磁盘配置与使用状况，是系统管理的首要任务之一。</p>
+<ul>
+<li>
+<p><strong>检视物理磁盘：<code>Get-Disk</code></strong></p>
+<p><code>Get-Disk</code> Cmdlet 用于展示连接到本机的物理存储设备信息，无论是传统的机械硬盘（HDD）、固态硬盘（SSD），还是可移动的 USB 驱动器。</p>
+<pre><code class="language-powershell">Get-Disk
+</code></pre>
+<p>执行此命令，将返回一个包含所有物理磁盘的列表。输出信息十分关键，通常包括：</p>
+<ul>
+<li><code>Number</code>：系统分配的磁盘编号。</li>
+<li><code>FriendlyName</code>：易于识别的磁盘型号或名称。</li>
+<li><code>HealthStatus</code>：磁盘的健康状况，如 “Healthy”。</li>
+<li><code>Size</code>：磁盘的总容量。</li>
+</ul>
+<p>此命令对于快速盘点系统硬件、检查新加硬盘是否被识别等场景，极为高效。</p>
+</li>
+<li>
+<p><strong>查看逻辑驱动器：<code>Get-PSDrive</code></strong></p>
+<p>用户在日常操作中更常接触的是逻辑驱动器，即我们熟悉的 C:、D: 等盘符。<code>Get-PSDrive</code> 不仅能够列出这些基于文件系统的驱动器，还能显示 PowerShell 内部定义的其他“虚拟驱动器”，如用于访问注册表的 <code>HKLM:</code>。</p>
+<pre><code class="language-powershell">Get-PSDrive
+</code></pre>
+<p>为了专注于磁盘存储，可以利用 <code>-PSProvider</code> 参数进行过滤，只显示文件系统类型的驱动器。</p>
+<pre><code class="language-powershell">Get-PSDrive -PSProvider FileSystem
+</code></pre>
+<p>其结果会清晰地展示每个驱动器的已用空间（Used）和可用空间（Free），是监控磁盘容量最直接的方式。</p>
+</li>
+</ul>
+<h5 id="222-启动应用程序命令驱动的执行力"><a class="header" href="#222-启动应用程序命令驱动的执行力"><strong>2.2.2. 启动应用程序：命令驱动的执行力</strong></a></h5>
+<p>PowerShell 提供了多种启动应用程序的方式，从便捷的快速调用到精确的过程控制，满足不同场景的需求。</p>
+<ul>
+<li>
+<p><strong>直接调用：最高效的日常方式</strong></p>
+<p>对于已经包含在系统 <code>Path</code> 环境变量中的可执行程序，最快捷的启动方式就是直接输入其程序名。</p>
+<pre><code class="language-powershell"># 启动记事本
+notepad
+ 
+# 启动计算器
+calc
+ 
+# 启动 Visual Studio Code (若安装时已配置好路径)
+code
+</code></pre>
+<p>这种方式同样支持传递命令行参数，例如使用记事本直接打开一个特定文件：</p>
+<pre><code class="language-powershell">notepad "C:\Users\Public\Documents\readme.txt"
+</code></pre>
+</li>
+<li>
+<p><strong>精细化控制：<code>Start-Process</code></strong></p>
+<p>当需要对程序的启动过程进行更多控制时，应使用 <code>Start-Process</code> Cmdlet。这是一个功能更丰富的“启动器”。</p>
+<pre><code class="language-powershell"># 等同于直接调用
+Start-Process -FilePath "notepad.exe"
+ 
+# 以管理员权限运行程序 (系统将弹出 UAC 提权确认框)
+Start-Process -FilePath "cmd.exe" -Verb RunAs
+ 
+# 使用默认浏览器打开一个网页
+Start-Process -FilePath "https://docs.microsoft.com/powershell/"
+</code></pre>
+<p><code>Start-Process</code> 的价值在于其丰富的参数集 ，它允许脚本在启动程序时指定窗口样式、传递复杂参数、等待进程结束后再继续执行等，这在自动化工作流中是不可或缺的。</p>
+</li>
+</ul>
+<h5 id="223-网络诊断感知系统的外部连接"><a class="header" href="#223-网络诊断感知系统的外部连接"><strong>2.2.3. 网络诊断：感知系统的外部连接</strong></a></h5>
+<p>在互联互通的时代，网络连接的健康状况至关重要。PowerShell 内置了强大的网络诊断工具，能够帮助用户快速定位网络问题。</p>
+<ul>
+<li>
+<p><strong>基础连通性测试：<code>Test-Connection</code></strong></p>
+<p><code>Test-Connection</code> 是传统 <code>ping</code> 工具的 PowerShell 升级版。它不仅能完成 ICMP Echo 请求来测试主机是否可达，更重要的是，它的输出是结构化的对象，而非纯文本。</p>
+<pre><code class="language-powershell"># 测试到公共 DNS 服务器 8.8.8.8 的连通性
+Test-Connection -ComputerName "8.8.8.8"
+</code></pre>
+<p><strong>别名 <code>ping</code></strong>：为了方便，可以直接使用 <code>ping</code> 这个别名来调用 <code>Test-Connection</code>。</p>
+<pre><code class="language-powershell">ping www.microsoft.com
+</code></pre>
+<p>由于其输出是对象，因此可以轻易地在脚本中获取如响应时间（ResponseTime）、目标 IP 地址（IPV4Address）等信息用于逻辑判断。</p>
+</li>
+<li>
+<p><strong>高级网络探测：<code>Test-NetConnection</code></strong></p>
+<p><code>Test-NetConnection</code> (PowerShell 4.0+ 中引入) 是一个功能更全面的网络诊断利器。它除了能执行 <code>ping</code> 测试外，还能检查特定 TCP 端口的连通性，这对于判断服务是否正常运行、防火墙是否阻断等问题至关重要。</p>
+<pre><code class="language-powershell"># 执行一个包含路由追踪和 ping 的综合测试
+Test-NetConnection -ComputerName "github.com"
+ 
+# 专门测试远程主机 443 (HTTPS) 端口是否开放
+Test-NetConnection -ComputerName "github.com" -Port 443
+</code></pre>
+<p>当进行端口测试时，返回结果中的 <code>TcpTestSucceeded</code> 属性（<code>True</code> 或 <code>False</code>）直接告知了端口的开放状态，是网络故障排查的得力助手。</p>
+</li>
+</ul>
+<h5 id="224-系统开关安全地控制电源状态"><a class="header" href="#224-系统开关安全地控制电源状态"><strong>2.2.4. 系统开关：安全地控制电源状态</strong></a></h5>
+<p>无论是自动化脚本的收尾工作，还是远程服务器的维护，安全地关闭或重启计算机都是一项基本而严肃的操作。</p>
+<p><strong>警告：</strong>  以下命令将直接影响目标计算机的运行状态。请务必在确认无误的环境下执行，或在测试时使用 <code>-WhatIf</code> 参数。</p>
+<ul>
+<li>
+<p><strong>关闭计算机：<code>Stop-Computer</code></strong></p>
+<pre><code class="language-powershell"># 关闭本地计算机。命令会立即生效。
+Stop-Computer
+</code></pre>
+</li>
+<li>
+<p><strong>重启计算机：<code>Restart-Computer</code></strong></p>
+<pre><code class="language-powershell"># 重启本地计算机。
+Restart-Computer
+</code></pre>
+</li>
+<li>
+<p><strong>远程控制与安全措施</strong></p>
+<p>这两个 Cmdlet 的真正威力体现在远程管理上。通过 <code>-ComputerName</code> 参数，可以同时操作一台或多台远程计算机，前提是执行者拥有足够的权限且目标计算机已开启 PowerShell 远程管理。</p>
+<pre><code class="language-powershell"># 同时重启名为 WEB-SRV01 和 DB-SRV01 的两台服务器
+Restart-Computer -ComputerName "WEB-SRV01", "DB-SRV01"
+</code></pre>
+<p><strong>安全阀：<code>-WhatIf</code> 与 <code>-Confirm</code></strong> 对于这类具有破坏性的操作，PowerShell 提供了两个至关重要的通用参数：</p>
+<ul>
+<li><code>-WhatIf</code>：预演参数。命令不会实际执行，但会详细报告如果执行将会发生什么。</li>
+<li><code>-Confirm</code>：确认参数。在执行敏感操作前，系统会暂停并请求用户确认。</li>
+</ul>
+<p>在执行任何可能中断服务的操作前，使用 <code>Restart-Computer -WhatIf</code> 进行预演，是一种值得推广的最佳实践。</p>
+</li>
+</ul>
+<h4 id="23-核心基石理解-powershell-的内在逻辑"><a class="header" href="#23-核心基石理解-powershell-的内在逻辑"><strong>2.3. 核心基石：理解 PowerShell 的内在逻辑</strong></a></h4>
+<p>到目前为止，我们已经学习了许多实用的命令，并感受到了它们的便捷。但要真正发挥 PowerShell 的威力，释放其全部潜能，我们必须理解其优雅设计背后的核心思想。本节将深入 PowerShell 的“灵魂”——对象（Object）、管道（Pipeline）和别名（Alias）。这三大基石共同构成了 PowerShell 高效、连贯且极具扩展性的内在逻辑。掌握它们，是从“使用”PowerShell 到“精通”PowerShell 的关键一步。</p>
+<h5 id="231-万物皆对象通过-get-member-初探奥秘"><a class="header" href="#231-万物皆对象通过-get-member-初探奥秘"><strong>2.3.1. 万物皆对象：通过 <code>Get-Member</code> 初探奥秘</strong></a></h5>
+<p>我们在第一章曾提到，PowerShell 最具革命性的特点是它在命令之间传递的是“对象”，而非纯文本。现在，让我们用一个强大的“探查”工具——<code>Get-Member</code>——来亲眼验证并深入理解这一点。</p>
+<p><code>Get-Member</code>（别名 <code>gm</code>）像一台功能强大的X光机，可以透视任何一个从管道传递给它的对象，并将其内部的“骨架”——即它的类型、属性和方法——清晰地展示出来。</p>
+<p>让我们以熟悉的 <code>Get-Process</code> 为例。首先，执行 <code>Get-Process</code>，我们看到的是一个格式化的进程列表：</p>
+<pre><code class="language-powershell">Get-Process
+</code></pre>
+<p>这看起来是文本，但它真的是吗？现在，让我们将 <code>Get-Process</code> 的输出通过<strong>管道</strong>（<code>|</code>，我们马上会讲到）送给 <code>Get-Member</code>：</p>
+<pre><code class="language-powershell">Get-Process | Get-Member
+</code></pre>
+<p>执行后，屏幕上出现的不再是进程列表，而是一份关于“进程对象”的详细技术报告。让我们来解读这份报告的关键信息：</p>
+<ul>
+<li>
+<p><strong>TypeName</strong>: <code>System.Diagnostics.Process</code> 这行告诉我们，<code>Get-Process</code> 输出的对象的“真实身份”或“类型”是 <code>.NET</code> 世界里的 <code>System.Diagnostics.Process</code> 类。这证明了我们处理的确实是一个标准化的、定义明确的数据结构，而非随意组织的文本。</p>
+</li>
+<li>
+<p><strong>Members (成员)</strong>：接下来是一个长长的列表，列出了这个类型的所有成员。成员主要分为两类：</p>
+<ul>
+<li><strong>Property (属性)</strong>：这是对象的静态特征或数据。你会看到许多熟悉的名字，比如 <code>Name</code>, <code>Id</code>, <code>CPU</code>, <code>WorkingSet64</code> (内存占用)等。它们就像对象的“名词”或“标签”，存储着关于对象的具体信息。这就是为什么 <code>Get-Process</code> 的默认表格能显示这些列的原因——它只是挑选了几个重要的属性来展示。</li>
+<li><strong>Method (方法)</strong>：这是对象能够执行的<strong>动作</strong>。你会看到像 <code>Kill()</code> (终止进程)、<code>Refresh()</code> (刷新信息)、<code>Start()</code> (启动)等。它们就像对象的“动词”，定义了我们可以对这个对象做什么。</li>
+</ul>
+</li>
+</ul>
+<p><strong>“万物皆对象”的启示：</strong>  这个简单的实验揭示了 PowerShell 的核心秘密：<strong>所见非所得</strong>。屏幕上美观的表格只是 PowerShell 为了方便阅读而对对象进行“格式化”后的样子。在幕后，流动的是包含了丰富数据（属性）和内置功能（方法）的完整对象。</p>
+<p>这意味着，我们不再需要用复杂的文本解析去“猜”进程名在哪一列，而是可以直接、精确地访问对象的属性，如 <code>(Get-Process -Name "notepad").CPU</code>。这种从处理不确定的“文本”到操作确定的“对象”的转变，是 PowerShell 效率和可靠性的根源。</p>
+<h5 id="232-管道pipeline的艺术用--连接命令"><a class="header" href="#232-管道pipeline的艺术用--连接命令"><strong>2.3.2. 管道（Pipeline）的艺术：用 <code>|</code> 连接命令</strong></a></h5>
+<p>现在我们来正式介绍刚才已经用过的 <code>|</code> 符号。它就是<strong>管道（Pipeline）</strong>，PowerShell 中最强大、最核心的“胶水”。管道的作用，是将一个命令的输出，直接作为下一个命令的输入。</p>
+<p>在传统 Shell 中，管道传递的是文本流。而在 PowerShell 中，管道传递的是<strong>对象流</strong>，并且对象在传递过程中<strong>不会丢失其类型和结构</strong>。这使得命令之间的协作达到了前所未有的高度。</p>
+<p><strong>管道的工作流程：</strong></p>
+<p>想象一条自动化生产线：</p>
+<ol>
+<li><code>Get-Process</code> (第一道工序) 生产出许多“进程对象”，并将它们一个个放到传送带（管道）上。</li>
+<li>传送带将这些完整的对象，原封不动地送到下一道工序。</li>
+<li><code>Where-Object</code> (第二道工序，一个过滤器) 检查每个传送过来的对象，只留下符合条件的（例如，内存占用大于100MB的）。</li>
+<li>传送带继续将筛选后的对象送到 <code>Sort-Object</code> (第三道工序，一个排序器)。</li>
+<li><code>Sort-Object</code> 按照指定的属性（例如，按CPU使用率）对传送过来的对象进行排序。</li>
+<li>最后，排序后的对象被送到 <code>Select-Object</code> (第四道工序)，它从每个对象中挑选出我们关心的几个属性，打包成一个新的、更简洁的对象，最终展示在屏幕上。</li>
+</ol>
+<p>将这个流程写成 PowerShell 命令，就是一行优雅的“管道链”：</p>
+<pre><code class="language-powershell"># 获取所有进程，筛选出工作集大于100MB的，按CPU使用降序排序，最后只显示名称和CPU
+Get-Process | Where-Object { $_.WorkingSet64 -gt 100MB } | Sort-Object -Property CPU -Descending | Select-Object -Property ProcessName, CPU
+</code></pre>
+<p>这行命令完美地诠释了 PowerShell 的哲学：<strong>每个工具只做一件事，并把它做到最好。然后用管道将它们连接起来，共同完成复杂的任务。</strong>  这种“乐高积木式”的组合能力，是 PowerShell 强大生产力的核心源泉。</p>
+<h5 id="233-别名alias发现命令的小名提高效率"><a class="header" href="#233-别名alias发现命令的小名提高效率"><strong>2.3.3. 别名（Alias）：发现命令的“小名”，提高效率</strong></a></h5>
+<p>在前面的学习中，我们已经多次提到 <code>cd</code>, <code>ls</code>, <code>ping</code> 等“小名”。这些就是<strong>别名（Alias）</strong>。别名是现有 Cmdlet 的一个替代名称或昵称，它的存在主要是为了：</p>
+<ol>
+<li><strong>提高效率</strong>：输入 <code>ls</code> 显然比输入 <code>Get-ChildItem</code> 要快得多。</li>
+<li><strong>兼容并包</strong>：为来自不同命令行背景（如 <code>CMD</code> 或 <code>bash</code>）的用户提供熟悉的环境，降低迁移成本。<code>dir</code>, <code>cd</code>, <code>cat</code>, <code>rm</code> 等别名的存在，让老用户倍感亲切。</li>
+</ol>
+<p><strong>探索别名：<code>Get-Alias</code></strong></p>
+<p>想知道一个别名对应的是哪个“大名”（Cmdlet）？或者想看看系统里都有哪些别名？<code>Get-Alias</code> 可以帮你。</p>
+<pre><code class="language-powershell"># 查看别名 ls 对应的原始命令
+Get-Alias -Name ls
+ 
+# 查看原始命令 Get-ChildItem 有哪些别名
+Get-Alias -Definition Get-ChildItem
+ 
+# 列出系统中所有的别名
+Get-Alias
+</code></pre>
+<p><strong>创建自己的别名：<code>New-Alias</code></strong></p>
+<p>你甚至可以为你自己常用的长命令创建别名。例如，如果你经常需要查看帮助示例：</p>
+<pre><code class="language-powershell"># 为 Get-Help -Examples 创建一个名为 "ghe" 的别名
+New-Alias -Name ghe -Value "Get-Help -Examples"
+ 
+# 现在你可以这样用了：
+ghe Get-Process
+</code></pre>
+<p><strong>重要提示</strong>：虽然别名在交互式使用时非常方便，但在编写需要分享、重用或长期维护的<strong>脚本</strong>时，<strong>强烈建议使用 Cmdlet 的全名</strong>。因为全名具有自解释性，更清晰，可读性更高，能让其他（以及未来的你）更容易理解脚本的意图。</p>
+<hr>
+<p>至此，我们已经探明了 PowerShell 的三大核心基石。<strong>对象</strong>是其信息的载体，<strong>管道</strong>是其流动的血脉，而<strong>别名</strong>则是其便捷的交互界面。理解了这三者如何协同工作，你就真正掌握了 PowerShell 的思维方式。带着这份全新的理解，你将发现，后续的学习会变得豁然开朗。</p>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="01第一章初探秘境-你的第一次PowerShell对话.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="03第三章语法基石-构建你自己的命令.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="01第一章初探秘境-你的第一次PowerShell对话.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="03第三章语法基石-构建你自己的命令.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

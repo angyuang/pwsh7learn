@@ -1,0 +1,671 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>第五章脚本编程-从命令到自动化方案 - PowerShell7从入门到精通</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-49765cd5.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-d1081bac.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">PowerShell7从入门到精通</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h3 id="第五章脚本编程从命令到自动化方案"><a class="header" href="#第五章脚本编程从命令到自动化方案"><strong>第五章：脚本编程——从命令到自动化方案</strong></a></h3>
+<p>欢迎来到创造者的世界。在此前的章节中，我们掌握了 PowerShell 的“词汇”（Cmdlet）、“文法”（管道与参数）和“修辞”（格式化与导出）。现在，我们将运用这些知识，开始撰写属于自己的“文章”与“书籍”——也就是功能强大、逻辑严谨的自动化脚本。</p>
+<p>本章是理论与实践的完美融合，是连接命令行技巧与软件工程思想的桥C。我们将学习如何通过函数封装代码、通过模块组织功能、通过错误处理提升脚本的健壮性。你将不再仅仅是执行命令，而是设计和构建能够解决实际问题的、可维护、可扩展的自动化解决方案。这是从“PowerShell 用户”到“PowerShell 开发者”的关键跃迁。</p>
+<hr>
+<h4 id="51-函数封装与重用"><a class="header" href="#51-函数封装与重用"><strong>5.1. 函数：封装与重用</strong></a></h4>
+<p>在我们的脚本编写之旅中，很快就会遇到一个常见问题：代码重复。我们可能会发现，为了完成不同的任务，我们反复地编写着几乎相同的代码块。这不仅效率低下，而且一旦需要修改，就得在多个地方进行同步，极易出错。<strong>函数（Function）</strong>，就是解决这一问题的终极答案。</p>
+<p>函数，本质上是一个被命名的、可重用的代码块。它将一系列相关的操作“封装”起来，并赋予其一个名字。未来，当我们需要执行这一系列操作时，只需简单地“调用”这个名字即可。这不仅让我们的代码变得整洁、模块化，更是实现了“一次编写，处处使用”的核心编程思想。</p>
+<h5 id="511-定义与调用函数function-关键字与-param-块"><a class="header" href="#511-定义与调用函数function-关键字与-param-块"><strong>5.1.1. 定义与调用函数：<code>function</code> 关键字与 <code>param()</code> 块</strong></a></h5>
+<p>在 PowerShell 中定义一个基础函数非常直观。</p>
+<ul>
+<li>
+<p><strong>基本结构</strong></p>
+<p>使用 <code>function</code> 关键字，后跟函数名，然后是一对花括号 <code>{}</code>，其中包含了函数要执行的代码。</p>
+<pre><code class="language-powershell"># 定义一个最简单的函数，用于打印问候语
+function Show-Greeting {
+    Write-Host "你好，欢迎来到 PowerShell 脚本世界！"
+}
+ 
+# 调用函数
+Show-Greeting
+</code></pre>
+</li>
+<li>
+<p><strong>接受输入：<code>param()</code> 块</strong></p>
+<p>为了让函数更通用，我们需要让它能够接受外部传入的数据。这通过在函数体顶部的 <code>param()</code> 块来实现。<code>param()</code> 块中定义的，就是这个函数的<strong>参数</strong>。</p>
+<pre><code class="language-powershell"># 定义一个可以向特定用户问好的函数
+function Show-PersonalGreeting {
+    param (
+        $UserName # 定义一个名为 $UserName 的参数
+    )
+ 
+    Write-Host "你好, $UserName! 很高兴见到你。"
+}
+ 
+# 调用函数并传递参数值
+Show-PersonalGreeting -UserName "张三"
+# 或者使用位置参数（因为 $UserName 是第一个也是唯一一个参数）
+Show-PersonalGreeting "李四"
+</code></pre>
+</li>
+<li>
+<p><strong>定义带类型的、强制性的参数</strong></p>
+<p>为了让函数更健壮，我们可以为参数指定数据类型，并设定其是否为必需。</p>
+<pre><code class="language-powershell">function Get-FormattedFileSize {
+    param (
+        # [string] 指定了 $Path 参数必须是字符串类型
+        # [Parameter(Mandatory=$true)] 声明了这是一个必选参数
+        [Parameter(Mandatory=$true)]
+        [string]$Path,
+ 
+        # [ValidateSet] 限制了 $Unit 参数只能是 "KB", "MB", "GB" 中的一个
+        [ValidateSet("KB", "MB", "GB")]
+        [string]$Unit = "MB" # 为 $Unit 提供了一个默认值 "MB"
+    )
+ 
+    if (-not (Test-Path -Path $Path)) {
+        Write-Error "错误：找不到文件或目录 '$Path'"
+        return # 使用 return 提前退出函数
+    }
+ 
+    $fileSizeInBytes = (Get-Item -Path $Path).Length
+    $divisor = switch ($Unit) {
+        "KB" { 1KB }
+        "MB" { 1MB }
+        "GB" { 1GB }
+    }
+ 
+    $formattedSize = [math]::Round($fileSizeInBytes / $divisor, 2)
+    Write-Output "$formattedSize $Unit"
+}
+ 
+# 调用示例
+Get-FormattedFileSize -Path "C:\Windows\explorer.exe" -Unit "KB"
+# Get-FormattedFileSize # 这行会报错，因为 -Path 参数是强制的
+</code></pre>
+<p>这个例子展示了如何通过参数属性（如 <code>Mandatory</code>）和验证属性（如 <code>ValidateSet</code>）来构建一个既灵活又可靠的函数。</p>
+</li>
+</ul>
+<h5 id="512-构建高级函数添加-cmdletbinding"><a class="header" href="#512-构建高级函数添加-cmdletbinding"><strong>5.1.2. 构建高级函数：添加 <code>[CmdletBinding()]</code></strong></a></h5>
+<p>虽然上面的函数已经很实用，但它们还缺少一些原生 Cmdlet 所拥有的“高级特性”，比如对 <code>-Verbose</code>, <code>-Debug</code>, <code>-ErrorAction</code> 等通用参数的支持。要让我们的函数也具备这些能力，只需在 <code>param()</code> 块之前，添加一个神奇的属性：<code>[CmdletBinding()]</code>。</p>
+<p>添加了 <code>[CmdletBinding()]</code> 的函数，被称为<strong>高级函数（Advanced Function）</strong>。它会立刻“解锁”以下能力：</p>
+<ul>
+<li><strong>自动支持通用参数</strong>：你的函数将自动获得 <code>-Verbose</code>, <code>-Debug</code>, <code>-ErrorAction</code>, <code>-WhatIf</code>, <code>-Confirm</code> 等所有通用参数，无需你编写任何额外代码。</li>
+<li><strong>与 <code>Write-Verbose</code> 等命令联动</strong>：函数内部的 <code>Write-Verbose</code> 和 <code>Write-Debug</code> 输出，会根据用户是否使用了 <code>-Verbose</code> 或 <code>-Debug</code> 开关来决定是否显示。</li>
+</ul>
+<pre><code class="language-powershell">function Set-FileToReadOnly {
+    [CmdletBinding(SupportsShouldProcess=$true)] # SupportsShouldProcess 开启对 -WhatIf 和 -Confirm 的支持
+    param (
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [string]$Path
+    )
+ 
+    # $PSCmdlet.ShouldProcess() 是实现 -WhatIf 和 -Confirm 的核心
+    # 第一个参数是操作的目标，第二个参数是操作的名称
+    if ($PSCmdlet.ShouldProcess($Path, "设置为只读")) {
+        Write-Verbose "正在获取文件对象: $Path"
+        $file = Get-Item -Path $Path
+        Write-Verbose "设置 IsReadOnly 属性为 $true"
+        $file.IsReadOnly = $true
+    }
+}
+ 
+# 调用高级函数
+Set-FileToReadOnly -Path ".\myfile.txt" -Verbose
+# 预演操作，但不会实际执行
+Set-FileToReadOnly -Path ".\myfile.txt" -WhatIf
+# 执行前会请求用户确认
+Set-FileToReadOnly -Path ".\myfile.txt" -Confirm
+</code></pre>
+<p>通过 <code>[CmdletBinding()]</code> 和 <code>$PSCmdlet.ShouldProcess()</code>，我们的函数在行为上已经与一个专业的、由 C# 编写的原生 Cmdlet 别无二致。</p>
+<h5 id="513-编写注释式帮助让你的函数像原生-cmdlet-一样专业"><a class="header" href="#513-编写注释式帮助让你的函数像原生-cmdlet-一样专业"><strong>5.1.3. 编写注释式帮助：让你的函数像原生 Cmdlet 一样专业</strong></a></h5>
+<p>一个没有文档的工具是不完整的。PowerShell 提供了一种绝佳的方式，让你能直接在函数代码的注释中，为其编写完整的、可以被 <code>Get-Help</code> 读取的帮助文档。这种方式被称为<strong>注释式帮助（Comment-Based Help）</strong>。</p>
+<p>只需在函数定义的上方或内部，添加一个特殊的注释块 <code>&lt;# ... #&gt;</code>，并使用特定的关键字即可。</p>
+<pre><code class="language-powershell">function Get-FormattedFileSize {
+&lt;#
+.SYNOPSIS
+    获取一个文件的大小，并将其格式化为指定的单位 (KB, MB, GB)。
+ 
+.DESCRIPTION
+    这是一个高级函数，它计算指定文件的大小，并根据用户选择的单位（默认为MB）返回一个格式化的字符串。
+    该函数支持管道输入，并能处理路径不存在的错误。
+ 
+.PARAMETER Path
+    指定要计算大小的文件的完整路径。此参数是必需的，并支持从管道传入路径字符串。
+ 
+.PARAMETER Unit
+    指定返回大小的单位。有效值为 "KB", "MB", "GB"。默认为 "MB"。
+ 
+.EXAMPLE
+    PS C:\&gt; Get-FormattedFileSize -Path "C:\Windows\System32\kernel32.dll" -Unit KB
+    这会返回 kernel32.dll 文件的大小，以 KB 为单位。
+ 
+.EXAMPLE
+    PS C:\&gt; "C:\temp\my-large-file.zip" | Get-FormattedFileSize -Unit GB
+    这会通过管道将路径传递给函数，并返回文件大小，以 GB 为单位。
+ 
+.INPUTS
+    System.String
+    你可以通过管道将一个包含文件路径的字符串传递给此函数。
+ 
+.OUTPUTS
+    System.String
+    此函数返回一个表示格式化后文件大小的字符串。
+ 
+.LINK
+    Get-Item
+    Test-Path
+#&gt;
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+        [string]$Path,
+ 
+        [ValidateSet("KB", "MB", "GB")]
+        [string]$Unit = "MB"
+    )
+ 
+    # ... 函数的其余代码 ...
+}
+</code></pre>
+<p>写完这段注释后，你就可以像对待任何原生 Cmdlet 一样，对你的函数使用 <code>Get-Help</code> 了：</p>
+<pre><code class="language-powershell">Get-Help Get-FormattedFileSize -Full
+Get-Help Get-FormattedFileSize -Examples
+</code></pre>
+<p>编写专业、详尽的注释式帮助，是衡量一个 PowerShell 开发者专业素养的重要标准。它让你的工具易于被他人（以及未来的自己）理解和使用，是代码分享与协作的基石。</p>
+<hr>
+<h4 id="52-作用域与模块化"><a class="header" href="#52-作用域与模块化"><strong>5.2. 作用域与模块化</strong></a></h4>
+<p>随着我们编写的函数和脚本越来越复杂，两个新的问题会浮出水面：</p>
+<ol>
+<li><strong>变量冲突</strong>：如果我在脚本的不同地方定义了同名的变量，它们会互相干扰吗？一个函数内部的变量，在函数外部能被访问到吗？</li>
+<li><strong>代码组织</strong>：我写了几十个相关的函数，难道要把它们都堆在一个巨大的 <code>.ps1</code> 脚本文件里吗？如何才能更好地组织、分发和重用我的函数库？</li>
+</ol>
+<p>作用域（Scope）和模块（Module）正是为了解决这两个问题而生的。作用域定义了变量和函数的“可见范围”和“生命周期”，是避免命名冲突和管理状态的基础。模块化则是一种将相关功能组织打包、实现代码重用与分发的工程化实践。</p>
+<h5 id="521-变量的生命周期全局脚本与局部作用域"><a class="header" href="#521-变量的生命周期全局脚本与局部作用域"><strong>5.2.1. 变量的生命周期：全局、脚本与局部作用域</strong></a></h5>
+<p><strong>作用域</strong>是一个决定了 PowerShell 元素（变量、函数、别名等）在何处可以被访问和修改的边界。PowerShell 中有多个作用域，它们像俄罗斯套娃一样层层嵌套。最常见的三个是：</p>
+<ul>
+<li>
+<p><strong>全局 (Global) 作用域</strong>：</p>
+<ul>
+<li><strong>范围</strong>：这是最外层的作用域。它存在于整个 PowerShell 会话的生命周期中。你在 PowerShell 提示符下直接定义的变量，就位于全局作用域。</li>
+<li><strong>生命周期</strong>：从你创建它开始，直到你关闭 PowerShell 窗口为止。</li>
+<li><strong>特点</strong>：全局作用域中的变量，在任何地方（包括脚本和函数内部）默认都是<strong>可见的</strong>，但不是<strong>可修改的</strong>。</li>
+</ul>
+</li>
+<li>
+<p><strong>脚本 (Script) 作用域</strong>：</p>
+<ul>
+<li><strong>范围</strong>：当一个 <code>.ps1</code> 脚本文件开始运行时，PowerShell 会为它创建一个脚本作用域。</li>
+<li><strong>生命周期</strong>：从脚本开始执行，到脚本执行结束。</li>
+<li><strong>特点</strong>：在脚本顶层（任何函数之外）定义的变量，位于脚本作用域。该脚本内的所有函数都可以看到并修改这些变量。</li>
+</ul>
+</li>
+<li>
+<p><strong>局部 (Local) 作用域</strong>：</p>
+<ul>
+<li><strong>范围</strong>：这是最常见的作用域。每当一个函数、<code>if</code> 语句、<code>for</code> 循环或任何 <code>{}</code> 代码块被执行时，通常都会创建一个新的局部作用域。</li>
+<li><strong>生命周期</strong>：仅在代码块执行期间存在。</li>
+<li><strong>特点</strong>：在函数内部定义的变量，默认就位于该函数的局部作用域。它对外界是完全不可见的。</li>
+</ul>
+</li>
+</ul>
+<p><strong>作用域的查找规则：</strong>  当你在代码中引用一个变量（如 <code>$myVar</code>）时，PowerShell 会：</p>
+<ol>
+<li>首先在<strong>当前（局部）作用域</strong>中查找。</li>
+<li>如果找不到，就去<strong>上一级作用域</strong>（例如，从函数内部去脚本作用域）查找。</li>
+<li>这个过程会一直持续，直到<strong>全局作用域</strong>。</li>
+<li>如果最终还是找不到，PowerShell 会认为它的值是 <code>$null</code>。</li>
+</ol>
+<p><strong>示例：作用域的隔离与交互</strong></p>
+<pre><code class="language-powershell">$globalVar = "I am global"
+ 
+function Test-Scope {
+    # 局部作用域
+    $localVar = "I am local"
+    Write-Host "Inside function: localVar is '$localVar'"
+    
+    # 可以读取全局变量
+    Write-Host "Inside function: globalVar is '$globalVar'"
+ 
+    # 尝试修改全局变量（错误的方式）
+    # 这实际上是在局部作用y域创建了一个新的、同名的 $globalVar 变量
+    $globalVar = "Local copy of global" 
+    Write-Host "Inside function: a new local globalVar is '$globalVar'"
+}
+ 
+# 调用函数前
+Write-Host "Before call: globalVar is '$globalVar'"
+Test-Scope
+# 调用函数后，全局变量并未被修改
+Write-Host "After call: globalVar is '$globalVar'"
+</code></pre>
+<p><strong>如何显式地操作不同作用域的变量？</strong> 如果你确实需要在函数内部修改一个全局或脚本变量，可以使用作用域修饰符：<code>$global:varName</code> 或 <code>$script:varName</code>。</p>
+<pre><code class="language-powershell">$count = 100
+function Decrement-Count {
+    $script:count-- # 使用 $script: 修饰符，明确地操作脚本作用域的 $count
+}
+Decrement-Count
+Write-Host $count # 输出 99
+</code></pre>
+<p><strong>最佳实践</strong>：尽量避免修改外部作用域的变量。函数应该通过<strong>参数</strong>接收输入，通过 <code>return</code> 或 <code>Write-Output</code> <strong>返回输出</strong>。这被称为“无副作用”，能让你的函数更独立、更可预测、更易于测试。</p>
+<h5 id="522-创建你的第一个模块psm1-脚本模块"><a class="header" href="#522-创建你的第一个模块psm1-脚本模块"><strong>5.2.2. 创建你的第一个模块：<code>.psm1</code> 脚本模块</strong></a></h5>
+<p>当你编写了一系列功能相关的函数（例如，一组用于管理公司内部应用的函数），并将它们保存在一个 <code>.ps1</code> 文件中时，你可以通过“点源（dot sourcing）”的方式来加载它们：<code>. C:\path\to\myfunctions.ps1</code>。但这不够优雅和专业。</p>
+<p>模块（Module）是 PowerShell 官方推荐的代码组织和分发方式。一个最简单的模块，就是一个扩展名为 <code>.psm1</code> (PowerShell Module) 的脚本文件。</p>
+<p><strong>从 <code>.ps1</code> 到 <code>.psm1</code> 的转变：</strong></p>
+<ol>
+<li>
+<p><strong>创建文件</strong>：将你所有相关的函数、变量定义、类定义等，保存到一个文件中，并将该文件的扩展名从 <code>.ps1</code> 改为 <code>.psm1</code>。例如，<code>MyCompany.App.psm1</code>。</p>
+</li>
+<li>
+<p><strong>导出成员 (可选但推荐)</strong>：默认情况下，<code>.psm1</code> 文件中的所有函数都会被导出（即在模块导入后可用）。但最佳实践是，只导出那些你希望用户直接使用的“公共”函数，而隐藏那些仅供内部使用的“私有”辅助函数。这通过 <code>Export-ModuleMember</code> 命令实现。 在你的 <code>.psm1</code> 文件末尾添加：</p>
+<pre><code class="language-powershell"># 只导出这两个公共函数
+Export-ModuleMember -Function Get-MyAppStatus, Start-MyApp
+
+</code></pre>
+</li>
+<li>
+<p><strong>组织目录</strong>：为了让 PowerShell 能够找到你的模块，你需要将 <code>.psm1</code> 文件放置在一个与模块同名的文件夹中，并将这个文件夹放置在 PowerShell 的模块路径（<code>$env:PSModulePath</code>）下的某个目录里。 <strong>标准目录结构：</strong></p>
+<pre><code class="language-powershell">C:\Users\YourName\Documents\PowerShell\Modules\
+└── MyCompany.App\              &lt;-- 模块根目录 (与模块名相同)
+    └── MyCompany.App.psm1      &lt;-- 模块文件
+
+</code></pre>
+</li>
+</ol>
+<h5 id="523-安装与管理模块install-module-import-module-get-module"><a class="header" href="#523-安装与管理模块install-module-import-module-get-module"><strong>5.2.3. 安装与管理模块：<code>Install-Module</code>, <code>Import-Module</code>, <code>Get-Module</code></strong></a></h5>
+<p>现在，你的模块已经创建好了，接下来就是如何使用它以及如何使用别人创建的模块。</p>
+<ul>
+<li>
+<p><strong><code>Import-Module</code>：加载模块</strong> 一旦你的模块被放置在正确的路径下，你就可以使用 <code>Import-Module</code> 来将其加载到当前的 PowerShell 会话中。</p>
+<pre><code class="language-powershell">Import-Module -Name MyCompany.App
+</code></pre>
+<p>导入后，你在模块中导出的所有函数，就如同原生 Cmdlet 一样可以直接使用了。PowerShell 3.0+ 引入了<strong>模块自动加载</strong>特性，当你第一次尝试使用模块中的某个命令时，PowerShell 会自动为你导入该模块，很多时候你甚至无需手动执行 <code>Import-Module</code>。</p>
+</li>
+<li>
+<p><strong><code>Get-Module</code>：查看已加载和可用的模块</strong></p>
+<pre><code class="language-powershell"># 查看当前会话已加载的模块
+Get-Module
+ 
+# 查看所有 PowerShell 能找到的、可用的模块（包括未加载的）
+Get-Module -ListAvailable
+</code></pre>
+</li>
+<li>
+<p><strong><code>Install-Module</code>：从 PowerShell Gallery 获取模块</strong> PowerShell Gallery 是一个由微软运营的、官方的 PowerShell 模块和脚本的公共仓库。成千上万的社区成员和公司（包括微软自己）都在上面发布了高质量的模块。 <code>Install-Module</code> 是你与这个宝库交互的窗口。</p>
+<pre><code class="language-powershell"># 查找与 "Azure" 相关的模块
+Find-Module -Name "Az*"
+ 
+# 安装 Azure 的核心模块 "Az"
+# -Scope CurrentUser 表示只为当前用户安装，无需管理员权限
+Install-Module -Name "Az" -Scope CurrentUser
+ 
+# 更新一个已安装的模块
+Update-Module -Name "Az"
+</code></pre>
+</li>
+</ul>
+<hr>
+<p>通过理解作用域，我们学会了如何安全地管理变量的生命周期，避免了潜在的冲突。通过学习模块化，我们掌握了将代码从凌乱的脚本，组织成结构化、可分发、可重用的专业工具的核心工程实践。现在，你的“自动化大厦”不仅有了坚实的“砖块”（函数），更有了清晰的“建筑规范”（作用域）和高效的“仓储物流体系”（模块）。接下来，我们将为这座大厦安装上“防灾减灾系统”——错误处理与调试。</p>
+<p>至此，我们已经学会了如何构建函数和模块，我们的“自动化大厦”已经初具雏形，结构合理，功能齐备。但是，一座只在风和日丽时才能正常运转的建筑，算不上是成功的工程。真正的考验，来自于暴风雨的洗礼。现实世界充满了各种意外：网络中断、文件不存在、权限不足、用户输入错误……</p>
+<hr>
+<h4 id="53-错误处理与调试"><a class="header" href="#53-错误处理与调试"><strong>5.3. 错误处理与调试</strong></a></h4>
+<p>本节，我们将为我们的脚本和函数，安装上强大的“防灾减灾”和“健康监测”系统。我们将学习如何优雅地捕获和处理运行时可能出现的任何错误，确保脚本在遭遇意外时不会粗暴地崩溃，而是能做出合理的响应。同时，我们还将掌握调试和日志记录的技巧，这就像是为大厦配备了监控摄像头和详细的建筑日志，当问题发生时，我们能迅速定位并修复它。</p>
+<p>编写能够正常工作的代码只是第一步，而编写能够在各种异常情况下依然表现得体、稳定可靠的**健壮（Robust）**代码，才是专业与业余的分水岭。错误处理与调试，是每一位严肃的脚本开发者都必须精通的核心技能。它能让你的自动化方案，从一个脆弱的“玻璃房子”，转变为一座坚固的“钢铁堡垒”。</p>
+<h5 id="531-健壮的错误捕获try-catch-finally-结构"><a class="header" href="#531-健壮的错误捕获try-catch-finally-结构"><strong>5.3.1. 健壮的错误捕获：<code>Try-Catch-Finally</code> 结构</strong></a></h5>
+<p>在 PowerShell 中，错误分为两种：<strong>非终止性错误（Non-Terminating Errors）<strong>和</strong>终止性错误（Terminating Errors）</strong>。</p>
+<ul>
+<li><strong>非终止性错误</strong>：是默认的错误类型。当发生时，PowerShell 会在控制台输出一条错误信息，但脚本会<strong>继续执行</strong>下一行。例如 <code>Get-ChildItem</code> 找不到路径。</li>
+<li><strong>终止性错误</strong>：是更严重的错误。它会立即<strong>停止</strong>当前执行流程（如管道或脚本块）。例如，调用一个不存在的命令。</li>
+</ul>
+<p><code>Try-Catch-Finally</code> 结构是专门用来处理<strong>终止性错误</strong>的。</p>
+<p><strong>语法结构：</strong></p>
+<pre><code class="language-powershell">try {
+    # 放置你希望监视其错误的代码块。
+    # 这里的代码被认为是“受保护的”。
+}
+catch {
+    # 如果 try 块中发生了“任何”终止性错误，
+    # 执行会立即跳转到这里。
+    # 特殊变量 $_ (或 $PSItem) 会包含一个描述错误的 ErrorRecord 对象。
+}
+finally {
+    # 无论 try 块中是否发生错误，
+    # 这里的代码“总是”会在最后被执行。
+    # 通常用于资源清理，如关闭文件句柄、断开数据库连接等。
+}
+</code></pre>
+<p><strong>如何让非终止性错误也能被 <code>Try-Catch</code> 捕获？</strong> 答案我们在 4.1.3 节已经见过：使用通用参数 <code>-ErrorAction Stop</code>。这会将一个非终止性错误，在它发生的那一刻，就地“提升”为一个终止性错误，从而触发 <code>Catch</code> 块。</p>
+<p><strong>示例：一个健壮的文件读取函数</strong></p>
+<pre><code class="language-powershell">function Get-FileContentSafe {
+    param ([string]$Path)
+ 
+    try {
+        Write-Verbose "尝试读取文件: $Path"
+        # 使用 -ErrorAction Stop，确保任何问题（如找不到文件、无权限）都能被 catch
+        $content = Get-Content -Path $Path -ErrorAction Stop
+        Write-Output $content
+    }
+    catch [System.Management.Automation.ItemNotFoundException] {
+        # 我们可以捕获特定类型的异常
+        Write-Warning "文件未找到: $Path"
+        # 可以返回一个默认值或 $null
+        return $null
+    }
+    catch {
+        # 捕获所有其他类型的错误
+        Write-Error "读取文件时发生未知错误: $($_.Exception.Message)"
+        # 将原始错误记录下来，以便深入分析
+        Write-Error "完整错误记录: $_"
+        return $null
+    }
+    finally {
+        Write-Verbose "文件读取操作完成。"
+    }
+}
+ 
+Get-FileContentSafe -Path "C:\IDoNotExist.txt" -Verbose
+Get-FileContentSafe -Path "C:\Windows\System32\config\SAM" -Verbose # 会触发权限错误
+</code></pre>
+<p><code>Try-Catch-Finally</code> 是构建高可靠性脚本的基石。它让你的脚本具备了从错误中恢复、记录问题并优雅退出的能力。</p>
+<h5 id="532-调试你的脚本使用-set-psdebug-和-vs-code-调试器"><a class="header" href="#532-调试你的脚本使用-set-psdebug-和-vs-code-调试器"><strong>5.3.2. 调试你的脚本：使用 <code>Set-PSDebug</code> 和 VS Code 调试器</strong></a></h5>
+<p>当脚本的行为不符合预期时，我们就需要进行<strong>调试（Debugging）</strong>——像侦探一样，一步步地跟踪代码的执行过程，检查变量的状态，找出问题的根源。</p>
+<ul>
+<li>
+<p><strong><code>Set-PSDebug</code>：PowerShell 内置的命令行调试器</strong></p>
+<p><code>Set-PSDebug</code> 是一个内置的 Cmdlet，可以开启 PowerShell 的调试模式。</p>
+<ul>
+<li><code>Set-PSDebug -Trace 1</code>：<strong>跟踪模式</strong>。在执行每一行代码之前，先将其打印出来。这可以让你清晰地看到脚本的执行路径。</li>
+<li><code>Set-PSDebug -Step</code>：<strong>单步模式</strong>。这会激活一个交互式的步进调试器。在执行每一行之前，PowerShell 都会暂停，并询问你如何继续（<code>[S]uspend, [V]erboseStep, [C]ontinue, [H]alt</code>）。这让你有机会在任意时刻检查变量的值。</li>
+</ul>
+<pre><code class="language-powershell"># 开启单步调试
+Set-PSDebug -Step
+# 运行你的脚本
+.\MyComplexScript.ps1
+# 关闭调试
+Set-PSDebug -Off
+</code></pre>
+<p>虽然功能强大，但 <code>Set-PSDebug</code> 的体验相对原始。对于复杂的调试任务，我们有更好的工具。</p>
+</li>
+<li>
+<p><strong>Visual Studio Code (VS Code) 调试器：现代化的图形界面调试</strong></p>
+<p>VS Code 配合 PowerShell 扩展，提供了世界一流的、图形化的调试体验，这也是我们<strong>强烈推荐</strong>的方式。</p>
+<p><strong>调试流程：</strong></p>
+<ol>
+<li><strong>设置断点 (Breakpoints)</strong>：在 VS Code 编辑器中，在你希望脚本暂停的那一行代码的行号左侧，单击鼠标，会出现一个红点。这就是一个断点。</li>
+<li><strong>启动调试</strong>：按下 <code>F5</code> 键（或从“运行和调试”侧边栏点击“启动调试”）。</li>
+<li><strong>脚本执行</strong>：脚本会开始运行，直到它命中你设置的第一个断点时，就会<strong>暂停</strong>。</li>
+<li><strong>调试控制</strong>：此时，VS Code 顶部会出现一个调试工具栏，提供了几个关键的控制按钮：
+<ul>
+<li><strong>Continue (F5)</strong>：继续执行，直到下一个断点或脚本结束。</li>
+<li><strong>Step Over (F10)</strong>：执行当前行，然后停在下一行（如果当前行是函数调用，它会执行完整个函数，而不会进入函数内部）。</li>
+<li><strong>Step Into (F11)</strong>：如果当前行是一个函数调用，则进入该函数的内部，从函数的第一行开始继续单步调试。</li>
+<li><strong>Step Out (Shift+F11)</strong>：从当前所在的函数内部，一次性执行完剩余部分，然后返回到调用该函数的地方。</li>
+<li><strong>Stop (Shift+F5)</strong>：停止调试。</li>
+</ul>
+</li>
+<li><strong>检查状态</strong>：当脚本暂停时，你可以在 VS Code 的“运行和调试”侧边栏的“变量”窗口中，实时查看所有当前作用域内的变量及其值。你也可以将鼠标悬停在代码中的变量上，直接看到它的值。在“调试控制台”中，你可以执行任意 PowerShell 命令来进一步探查当前的状态。</li>
+</ol>
+<p>VS Code 调试器直观、强大且高效，是解决复杂脚本问题的必备利器。</p>
+</li>
+</ul>
+<h5 id="533-日志记录留下你的足迹"><a class="header" href="#533-日志记录留下你的足迹"><strong>5.3.3. 日志记录：留下你的足迹</strong></a></h5>
+<p>除了交互式调试，另一种至关重要的实践是<strong>日志记录（Logging）</strong>。通过在代码的关键位置输出信息，你可以为脚本的执行过程，创建一份永久性的“航行日志”。当脚本在无人值守的环境（如计划任务）中运行时，这份日志是排查问题的唯一线索。</p>
+<p>PowerShell 提供了多个 <code>Write-*</code> 命令，用于输出不同级别的日志信息，它们与通用参数紧密相连。</p>
+<ul>
+<li><strong><code>Write-Verbose</code></strong>：用于输出详细的、描述“发生了什么”的过程性信息。这些信息只有在用户指定了 <code>-Verbose</code> 参数时才会显示。</li>
+<li><strong><code>Write-Debug</code></strong>：用于输出更深层次的、用于诊断问题的调试信息，例如关键变量的快照。这些信息只有在用户指定了 <code>-Debug</code> 参数时才会显示。</li>
+<li><strong><code>Write-Information</code></strong>：用于输出常规的、用户可能感兴趣的信息。可以通过 <code>$InformationPreference</code> 变量来控制其显示。</li>
+<li><strong><code>Write-Warning</code></strong>：用于输出警告信息，提示可能存在的问题，但不足以停止脚本。默认以黄色显示。</li>
+<li><strong><code>Write-Error</code></strong>：用于生成一个非终止性错误记录。这比直接 <code>throw</code> 一个异常要“温和”，它允许脚本继续执行，但会将错误信息记录到错误流中。</li>
+</ul>
+<p><strong>最佳实践：结合 <code>Start-Transcript</code></strong> <code>Start-Transcript</code> Cmdlet 可以将 PowerShell 会话中的<strong>所有</strong>输入和输出（包括 <code>Write-Host</code>、<code>Write-Verbose</code> 等所有流）都记录到一个文本文件中。在一个脚本的开头调用 <code>Start-Transcript</code>，在结尾调用 <code>Stop-Transcript</code>，是创建完整、详尽的执行日志的最简单方法。</p>
+<pre><code class="language-powershell"># 脚本开头
+Start-Transcript -Path "C:\logs\MyScript-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
+ 
+# ... 你的脚本逻辑，其中包含了各种 Write-Verbose, Write-Warning 等 ...
+ 
+# 脚本结尾
+Stop-Transcript
+</code></pre>
+<hr>
+<p>至此，我们已经为我们的自动化方案配备了全套的“安全与诊断”系统。我们学会了用 <code>Try-Catch</code> 抵御意外，用 VS Code 调试器洞察幽微，用日志记录追踪历史。一个真正健壮、可靠、易于维护的 PowerShell 脚本，不仅在于其功能的实现，更在于其对“意外”的深思熟虑。带着这份专业素养，我们已经准备好，向更广阔的实战领域进发。</p>
+<hr>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="04第四章命令的艺术-深入Cmdlet与管道.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="06第六章系统管理-Windows管理自动化.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="04第四章命令的艺术-深入Cmdlet与管道.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="06第六章系统管理-Windows管理自动化.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>
